@@ -1,0 +1,34 @@
+import 'package:flutter/material.dart';
+import 'package:suits/core/constant/app_constant.dart';
+
+class CustomButton extends StatelessWidget {
+  const CustomButton({super.key, required this.text, required this.onTap});
+  final String text;
+  final VoidCallback onTap;
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: MediaQuery.sizeOf(context).width,
+        decoration: BoxDecoration(
+          color: Color(primaryColor),
+          borderRadius: BorderRadius.circular(32),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Center(
+            child: Text(
+              text,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontFamily: fontFamily,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
