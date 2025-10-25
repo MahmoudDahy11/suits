@@ -1,0 +1,61 @@
+import 'package:flutter/material.dart';
+import 'package:suits/core/constant/app_constant.dart';
+
+// ignore: must_be_immutable
+class CustomTextField extends StatelessWidget {
+  CustomTextField({
+    super.key,
+    required this.hintText,
+    this.suffix,
+    this.onSaved,
+    this.obscureText = false,
+    this.prefixIcon,
+  });
+  final String hintText;
+  final Widget? suffix;
+  final Widget? prefixIcon;
+  Function(String?)? onSaved;
+  bool obscureText;
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      errorBuilder: (context, error) => Text(
+        error,
+        style: TextStyle(color: Colors.red.shade700, fontSize: 12),
+      ),
+      obscureText: obscureText,
+      onSaved: onSaved,
+      validator: (value) {
+        if (value!.isEmpty) {
+          return 'This field is required';
+        }
+        return null;
+      },
+      decoration: InputDecoration(
+        prefixIcon: prefixIcon,
+        fillColor: Color(fillColorTextField),
+        suffixIcon: suffix,
+        filled: true,
+        hintText: hintText,
+        hintStyle: TextStyle(
+          color: Color(0xffA1A8B0),
+          fontSize: 18,
+          fontFamily: fontFamily,
+          fontWeight: FontWeight.w400,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(24),
+          borderSide: BorderSide(color: Color(0xffE3E5E9), width: 1.5),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(24),
+          borderSide: BorderSide(color: Color(0xffC5C0BA), width: 1.5),
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(24),
+          borderSide: BorderSide(color: Color(0xffC5C0BA), width: 2),
+        ),
+      ),
+    );
+  }
+}
