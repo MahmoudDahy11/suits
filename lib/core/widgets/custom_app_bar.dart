@@ -19,7 +19,7 @@ class CustomAppBar extends StatelessWidget {
             size: iconsSize,
           ),
         ),
-        SizedBox(width: MediaQuery.sizeOf(context).width * 0.35),
+        SizedBox(width: MediaQuery.sizeOf(context).width * 0.32),
         Text(title, style: AppTextStyles.style18BoldBlack),
       ],
     );
