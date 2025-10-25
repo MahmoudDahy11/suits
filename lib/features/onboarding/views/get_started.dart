@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:suits/core/constant/app_constant.dart';
 import 'package:suits/core/utils/app_text_style.dart';
 import 'package:suits/core/utils/assets.dart';
@@ -68,8 +69,14 @@ class GetStarted extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: AppTextStyles.style15SemiBoldGrey,
                 ),
-                const SizedBox(height: spacebetweenSections * 2),
-                CustomButton(text: "Get started", onTap: () {}),
+
+                const SizedBox(height: spacebetweenSections * 5),
+                CustomButton(
+                  text: "Get started",
+                  onTap: () {
+                    context.go(loginView);
+                  },
+                ),
               ],
             ),
           ),
