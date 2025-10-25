@@ -41,5 +41,7 @@ class Assets {
   static const String passwordss = "assets/textfield_icon/passwordss.png";
 
   static const String users = "assets/textfield_icon/users.png";
+
+  static const String userss = "assets/textfield_icon/userss.png";
   
 }
