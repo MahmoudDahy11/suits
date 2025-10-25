@@ -23,4 +23,23 @@ class Assets {
   static const String imagesGroup2 = "assets/images/Group 2.png";
 
   static const String curve = "assets/images/curve.png";
+
+  static const String googlet = "assets/signin_icon/googlet.png";
+
+  static const String facebookt = "assets/signin_icon/facebookt.png";
+
+  static const String applet = "assets/signin_icon/applet.png";
+
+  static const String calls = "assets/textfield_icon/calls.png";
+
+  static const String emailss = "assets/textfield_icon/emailss.png";
+
+  static const String mails = "assets/textfield_icon/mails.png";
+
+  static const String passwords = "assets/textfield_icon/passwords.png";
+
+  static const String passwordss = "assets/textfield_icon/passwordss.png";
+
+  static const String users = "assets/textfield_icon/users.png";
+  
 }
