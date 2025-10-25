@@ -6,7 +6,6 @@ import 'package:suits/core/utils/app_text_style.dart';
 import 'package:suits/core/utils/assets.dart';
 import 'package:suits/core/widgets/custom_button.dart';
 import 'package:suits/core/widgets/custom_text_field.dart';
-
 import 'widgets/card_view.dart';
 import 'widgets/custom_divider.dart';
 import 'widgets/custom_list_tile.dart';
@@ -19,7 +18,18 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
-  bool isObscure = false;
+  final ValueNotifier<bool> isObscure = ValueNotifier(true);
+  final ValueNotifier<bool> isEmptyEmail = ValueNotifier(true);
+  final ValueNotifier<bool> isEmptyPassword = ValueNotifier(true);
+
+  @override
+  void dispose() {
+    isObscure.dispose();
+    isEmptyEmail.dispose();
+    isEmptyPassword.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -39,27 +49,49 @@ class _LoginViewState extends State<LoginView> {
                     style: AppTextStyles.style12SemiBoldBlack,
                   ),
                   const SizedBox(height: spacebetweenSections * 1.5),
-                  CustomTextField(
-                    hintText: 'Enter your email',
-                    prefixIcon: Image.asset(Assets.mails),
+                  ValueListenableBuilder<bool>(
+                    valueListenable: isEmptyEmail,
+                    builder: (context, empty, _) {
+                      return CustomTextField(
+                        hintText: 'Enter your email',
+                        onChanged: (value) =>
+                            isEmptyEmail.value = value.isEmpty,
+                        prefixIcon: Image.asset(
+                          empty ? Assets.mails : Assets.emailss,
+                        ),
+                      );
+                    },
                   ),
                   const SizedBox(height: spacebetweenSections / 2),
-                  CustomTextField(
-                    obscureText: isObscure,
-                    hintText: 'Enter your password',
-                    suffix: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          isObscure = !isObscure;
-                        });
-                      },
-                      icon: Icon(
-                        isObscure ? CupertinoIcons.eye : Icons.visibility_off,
-                        color: Color(iconsColor),
-                        size: iconsSize,
-                      ),
-                    ),
-                    prefixIcon: Image.asset(Assets.passwords),
+                  ValueListenableBuilder<bool>(
+                    valueListenable: isObscure,
+                    builder: (context, obscure, _) {
+                      return ValueListenableBuilder<bool>(
+                        valueListenable: isEmptyPassword,
+                        builder: (context, empty, _) {
+                          return CustomTextField(
+                            obscureText: obscure,
+                            onChanged: (value) =>
+                                isEmptyPassword.value = value.isEmpty,
+                            hintText: 'Enter your password',
+                            suffix: IconButton(
+                              onPressed: () =>
+                                  isObscure.value = !isObscure.value,
+                              icon: Icon(
+                                !obscure
+                                    ? CupertinoIcons.eye
+                                    : Icons.visibility_off,
+                                color: Color(iconsColor),
+                                size: iconsSize,
+                              ),
+                            ),
+                            prefixIcon: Image.asset(
+                              empty ? Assets.passwords : Assets.passwordss,
+                            ),
+                          );
+                        },
+                      );
+                    },
                   ),
                   const SizedBox(height: spacebetweenSections / 3),
                   GestureDetector(

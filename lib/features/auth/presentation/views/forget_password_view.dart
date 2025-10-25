@@ -6,7 +6,6 @@ import 'package:suits/core/utils/assets.dart';
 import 'package:suits/core/widgets/custom_app_bar.dart';
 import 'package:suits/core/widgets/custom_button.dart';
 import 'package:suits/core/widgets/custom_text_field.dart';
-
 import 'widgets/auth_toggle_swich.dart';
 
 class ForgetPasswordView extends StatefulWidget {
@@ -18,10 +17,12 @@ class ForgetPasswordView extends StatefulWidget {
 
 class _ForgetPasswordViewState extends State<ForgetPasswordView> {
   final ValueNotifier<int> _authController = ValueNotifier(0);
-  int _initialIndex = 0;
+  final ValueNotifier<String> _inputValue = ValueNotifier('');
+
   @override
-  dispose() {
+  void dispose() {
     _authController.dispose();
+    _inputValue.dispose();
     super.dispose();
   }
 
@@ -38,12 +39,7 @@ class _ForgetPasswordViewState extends State<ForgetPasswordView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CustomAppBar(
-                    title: '',
-                    onTap: () {
-                      context.go(loginView);
-                    },
-                  ),
+                  CustomAppBar(title: '', onTap: () => context.go(loginView)),
                   const SizedBox(height: spacebetweenSections / 2),
                   const Text(
                     'Forgot Your Password?',
@@ -55,32 +51,39 @@ class _ForgetPasswordViewState extends State<ForgetPasswordView> {
                     style: AppTextStyles.style15SemiBoldGrey,
                   ),
                   const SizedBox(height: spacebetweenSections * 2),
-
                   AuthToggleSwitch(
                     controller: _authController,
-                    onToggle: (value) {
-                      setState(() {
-                        _initialIndex = value;
-                      });
-                      debugPrint('Selected index: $value');
-                    },
+                    onToggle: (value) => _authController.value = value,
                   ),
                   const SizedBox(height: spacebetweenSections),
-                  _initialIndex == 0
-                      ? CustomTextField(
-                          hintText: 'Enter your email',
-                          prefixIcon: Image.asset(Assets.emailss),
-                        )
-                      : CustomTextField(
+                  ValueListenableBuilder<int>(
+                    valueListenable: _authController,
+                    builder: (context, index, _) {
+                      if (index == 0) {
+                        return ValueListenableBuilder<String>(
+                          valueListenable: _inputValue,
+                          builder: (context, text, _) {
+                            return CustomTextField(
+                              onChanged: (value) => _inputValue.value = value,
+                              hintText: 'Enter your email',
+                              prefixIcon: text.isEmpty
+                                  ? Image.asset(Assets.mails)
+                                  : Image.asset(Assets.emailss),
+                            );
+                          },
+                        );
+                      } else {
+                        return CustomTextField(
                           hintText: 'Enter your phone number',
                           prefixIcon: Image.asset(Assets.calls),
-                        ),
+                        );
+                      }
+                    },
+                  ),
                   const SizedBox(height: spacebetweenSections * 2),
                   CustomButton(
                     text: 'Reset Password',
-                    onTap: () {
-                      context.go(otpView);
-                    },
+                    onTap: () => context.go(otpView),
                   ),
                 ],
               ),
