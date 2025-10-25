@@ -10,15 +10,18 @@ class CustomTextField extends StatelessWidget {
     this.onSaved,
     this.obscureText = false,
     this.prefixIcon,
+    this.onChanged,
   });
   final String hintText;
   final Widget? suffix;
   final Widget? prefixIcon;
   Function(String?)? onSaved;
+  final Function(String)? onChanged;
   bool obscureText;
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      onChanged: onChanged,
       errorBuilder: (context, error) => Text(
         error,
         style: TextStyle(color: Colors.red.shade700, fontSize: 12),
