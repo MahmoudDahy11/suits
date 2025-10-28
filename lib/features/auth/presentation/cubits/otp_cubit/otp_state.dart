@@ -16,9 +16,9 @@ class OtpSent extends OtpState {}
 class OtpVerified extends OtpState {}
 
 class OtpError extends OtpState {
-  final String message;
-  const OtpError(this.message);
+  final String errmessage;
+  const OtpError(this.errmessage);
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [errmessage];
 }
