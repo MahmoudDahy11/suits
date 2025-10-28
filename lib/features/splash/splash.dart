@@ -5,6 +5,8 @@ import 'package:suits/core/constant/app_constant.dart';
 import 'package:suits/core/utils/assets.dart';
 import 'dart:async';
 
+import '../auth/data/service/local_storage.dart';
+
 class Splash extends StatefulWidget {
   const Splash({super.key});
 
@@ -20,7 +22,7 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-
+    LocalStorageService.init();
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
@@ -42,9 +44,14 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
   }
 
   void _navigateToNextScreen() {
+    bool loggedIn = LocalStorageService.isLoggedIn();
     Future.delayed(const Duration(seconds: 3), () {
       if (mounted) {
-        context.go(root);
+        if (loggedIn) {
+          context.go(loginView);
+        } else {
+          context.go(root);
+        }
       }
     });
   }
