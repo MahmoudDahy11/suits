@@ -7,7 +7,7 @@ import 'package:mailer/smtp_server/gmail.dart';
 class OtpService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  final Duration otpValidity = const Duration(minutes: 5);
+  final Duration otpValidity = const Duration(minutes: 15);
 
   final Duration resendCooldown = const Duration(seconds: 60);
 
@@ -63,10 +63,10 @@ class OtpService {
     final smtpServer = gmail('dahym2028@gmail.com', 'gakr kkld eebr awww');
 
     final message = Message()
-      ..from = const Address('dahym2028@gmail.com', 'Ebra App')
+      ..from = const Address('dahym2028@gmail.com', 'Suits')
       ..recipients.add(email)
       ..subject = 'Your OTP Code'
-      ..text = 'رمز التحقق الخاص بك هو: $otp (صالح لمدة 5 دقائق)';
+      ..text = 'رمز التحقق الخاص بك هو: $otp (صالح لمدة 15 دقائق)';
 
     try {
       await send(message, smtpServer);
