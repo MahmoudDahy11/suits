@@ -90,4 +90,15 @@ class FirebaseAuthRepoImplement extends FirebaseAuthRepo {
       return left(CustomFailure(errMessage: e.toString()));
     }
   }
+
+  
+  @override
+  Future<Either<CustomFailure, Unit>> signInWithGoogle() async {
+    try {
+      await _firebaseService.signInWithGoogle();
+      return right(unit);
+    } on CustomException catch (ex) {
+      return left(CustomFailure(errMessage: ex.errMessage));
+    }
+  }
 }

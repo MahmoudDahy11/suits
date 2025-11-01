@@ -35,4 +35,6 @@ abstract class FirebaseAuthRepo {
   Future<Either<CustomFailure, Unit>> forgetPassword({
     required String newPassword,
   });
+
+  Future<Either<CustomFailure, Unit>> signInWithGoogle();
 }
