@@ -2,8 +2,8 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:suits/core/error/custom_excption.dart';
-
 import 'local_storage.dart';
 import 'otp_service.dart';
 
@@ -177,6 +177,57 @@ class FirebaseService {
       );
     } catch (e) {
       throw CustomException(errMessage: e.toString());
+    }
+  }
+
+  Future<User> signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+      if (googleUser == null) {
+        throw CustomException(errMessage: "Google sign-in was cancelled.");
+      }
+
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+
+      final credential = GoogleAuthProvider.credential(
+        idToken: googleAuth.idToken,
+      );
+
+      final UserCredential userCredential = await _auth.signInWithCredential(
+        credential,
+      );
+      final user = userCredential.user;
+
+      if (user == null) {
+        throw CustomException(
+          errMessage: "Google sign-in failed. No user returned.",
+        );
+      }
+
+      await firestore.collection('users').doc(user.uid).set({
+        'uid': user.uid,
+        'email': user.email,
+        'name': user.displayName ?? '',
+        'photoUrl': user.photoURL ?? '',
+        'createdAt': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+
+      await LocalStorageService.saveUserData(
+        uid: user.uid,
+        email: user.email!,
+        name: user.displayName,
+        photoUrl: user.photoURL,
+      );
+
+      return user;
+    } on FirebaseAuthException catch (e) {
+      throw CustomException(
+        errMessage: e.message ?? "FirebaseAuth Google error.",
+      );
+    } catch (e) {
+      throw CustomException(errMessage: "Google sign-in failed: $e");
     }
   }
 }
