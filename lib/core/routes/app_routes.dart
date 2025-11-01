@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:suits/core/constant/app_constant.dart';
 import 'package:suits/core/service/get_it.dart';
 import 'package:suits/features/auth/presentation/cubits/forget_password_cubit/forget_password_cubit.dart';
+import 'package:suits/features/auth/presentation/cubits/google_cubit/google_cubit.dart';
 import 'package:suits/features/auth/presentation/cubits/login_cubit/login_cubit.dart';
 import 'package:suits/features/auth/presentation/cubits/otp_cubit/otp_cubit.dart';
 import 'package:suits/features/auth/presentation/cubits/signup_cubit/signup_cubit.dart';
@@ -40,11 +41,15 @@ class AppRoutes {
       GoRoute(
         path: loginView,
         name: 'loginView',
-        builder: (context, state) => BlocProvider(
-          create: (context) => getIt<LoginCubit>(),
+        builder: (context, state) => MultiBlocProvider(
+          providers: [
+            BlocProvider(create: (context) => getIt<LoginCubit>()),
+            BlocProvider(create: (context) => getIt<GoogleCubit>()),
+          ],
           child: const LoginView(),
         ),
       ),
+
       GoRoute(
         path: signupView,
         name: 'signupView',

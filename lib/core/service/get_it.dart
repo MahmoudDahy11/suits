@@ -1,4 +1,5 @@
 import 'package:get_it/get_it.dart';
+import 'package:suits/features/auth/presentation/cubits/google_cubit/google_cubit.dart';
 import '../../features/auth/data/repo/auth_repo_implement.dart';
 import '../../features/auth/data/repo/otp_repo_implement.dart';
 import '../../features/auth/data/service/firebase_auth.dart';
@@ -39,4 +40,5 @@ Future<void> getItSetup() async {
   getIt.registerFactory(() => SignoutCubit(getIt()));
   getIt.registerFactory(() => OtpCubit(getIt()));
   getIt.registerFactory(() => ForgetPasswordCubit(getIt()));
+  getIt.registerFactory(() => GoogleCubit(getIt()));
 }
