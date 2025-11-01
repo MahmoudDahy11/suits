@@ -18,7 +18,7 @@ class CustomButton extends StatelessWidget {
       child: Container(
         width: MediaQuery.sizeOf(context).width,
         decoration: BoxDecoration(
-          color: Color(primaryColor),
+          color: const Color(primaryColor),
           borderRadius: BorderRadius.circular(32),
         ),
         child: Padding(
@@ -27,13 +27,13 @@ class CustomButton extends StatelessWidget {
             child: !check
                 ? Text(
                     text,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 16,
                       fontFamily: fontFamily,
                     ),
                   )
-                : CircularProgressIndicator(),
+                : const CircularProgressIndicator(),
           ),
         ),
       ),

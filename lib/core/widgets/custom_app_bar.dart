@@ -13,7 +13,7 @@ class CustomAppBar extends StatelessWidget {
       children: [
         GestureDetector(
           onTap: onTap ?? () {},
-          child: Icon(
+          child: const Icon(
             Icons.arrow_back_ios,
             color: Color(arrowIconColor),
             size: iconsSize,

@@ -15,6 +15,7 @@ import 'package:suits/features/auth/presentation/views/login_view.dart';
 import 'package:suits/features/auth/presentation/views/otp_reset_password_view.dart';
 import 'package:suits/features/auth/presentation/views/otp_signup_view.dart';
 import 'package:suits/features/auth/presentation/views/signup_view.dart';
+import 'package:suits/features/home/presentation/views/home_view.dart';
 import 'package:suits/features/onboarding/root.dart';
 import 'package:suits/features/onboarding/views/get_started.dart';
 import 'package:suits/features/splash/splash.dart';
@@ -89,6 +90,11 @@ class AppRoutes {
           create: (context) => getIt<ForgetPasswordCubit>(),
           child: const CreateNewPasswordView(),
         ),
+      ),
+      GoRoute(
+        path: homeView,
+        name: 'homeView',
+        builder: (context, state) => const HomeView(),
       ),
     ],
     errorBuilder: (context, state) =>

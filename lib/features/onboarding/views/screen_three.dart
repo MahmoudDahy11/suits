@@ -9,7 +9,7 @@ class ScreenThree extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(scafoldColor),
+      backgroundColor: const Color(scafoldColor),
       body: Stack(
         children: [
           Image.asset(
@@ -21,8 +21,8 @@ class ScreenThree extends StatelessWidget {
             top: MediaQuery.sizeOf(context).height * .75,
             left: 0,
             right: 0,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
+            child: const Padding(
+              padding: EdgeInsets.symmetric(horizontal: defaultPadding),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

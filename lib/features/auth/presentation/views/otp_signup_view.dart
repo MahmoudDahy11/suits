@@ -79,7 +79,7 @@ class _OtpSignupViewState extends State<OtpSignupView> {
           child: Form(
             key: formKey,
             child: Scaffold(
-              backgroundColor: Color(scafoldColor),
+              backgroundColor: const Color(scafoldColor),
               body: SafeArea(
                 child: SingleChildScrollView(
                   child: Padding(
@@ -95,7 +95,7 @@ class _OtpSignupViewState extends State<OtpSignupView> {
                           },
                         ),
                         const SizedBox(height: spacebetweenSections / 2),
-                        Align(
+                        const Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
                             'Enter Verification Code',

@@ -50,7 +50,7 @@ class _ForgetPasswordViewState extends State<ForgetPasswordView> {
           child: Form(
             key: formKey,
             child: Scaffold(
-              backgroundColor: Color(scafoldColor),
+              backgroundColor: const Color(scafoldColor),
               body: SafeArea(
                 child: SingleChildScrollView(
                   child: Padding(

@@ -27,3 +27,4 @@ const String forgetPasswordView = '/forgetPassword';
 const String otpSignupView = '/otpSignupView';
 const String otpResetPasswordView = '/otpResetPasswordView';
 const String createNewPasswordView = '/createNewPasswordView';
+const String homeView = '/homeView';

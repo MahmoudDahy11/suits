@@ -56,7 +56,7 @@ class _SignupViewState extends State<SignupView> {
           child: Form(
             key: formKey,
             child: Scaffold(
-              backgroundColor: Color(scafoldColor),
+              backgroundColor: const Color(scafoldColor),
               body: SafeArea(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
@@ -124,7 +124,7 @@ class _SignupViewState extends State<SignupView> {
                                       obscure
                                           ? CupertinoIcons.eye
                                           : Icons.visibility_off,
-                                      color: Color(iconsColor),
+                                      color: const Color(iconsColor),
                                       size: iconsSize,
                                     ),
                                   ),

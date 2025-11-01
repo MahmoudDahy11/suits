@@ -24,7 +24,7 @@ class FirebaseAuthRepoImplement extends FirebaseAuthRepo {
     required String name,
   }) async {
     try {
-      var user = await _firebaseService.createUserWithEmailAndPassword(
+      final user = await _firebaseService.createUserWithEmailAndPassword(
         email: email,
         password: password,
         name: name,
@@ -50,7 +50,7 @@ class FirebaseAuthRepoImplement extends FirebaseAuthRepo {
     required String password,
   }) async {
     try {
-      var user = await _firebaseService.signInWithEmailAndPassword(
+      final user = await _firebaseService.signInWithEmailAndPassword(
         email: email,
         password: password,
       );

@@ -15,7 +15,7 @@ class ForgetPasswordCubit extends Cubit<ForgetPasswordState> {
     );
     result.fold(
       (failure) => emit(ForgetPasswordFailure(errMessage: failure.errMessage)),
-      (_) => emit(ForgetPasswordSuccess(message: 'تم تغيير كلمة المرور بنجاح')),
+      (_) => emit(const ForgetPasswordSuccess(message: 'تم تغيير كلمة المرور بنجاح')),
     );
   }
 }

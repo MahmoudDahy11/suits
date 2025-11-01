@@ -9,10 +9,10 @@ class AuthToggleSwitch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color activeColor = Color(primaryColor);
+    const Color activeColor = Color(primaryColor);
     final Color inactiveColor = Colors.grey[600]!;
-    final Color backgroundColor = Color(fillColorTextField);
-    final Color activeBgColor = Colors.white;
+    const Color backgroundColor = Color(fillColorTextField);
+    const Color activeBgColor = Colors.white;
 
     return Container(
       height: 60,

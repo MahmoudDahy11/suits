@@ -65,7 +65,7 @@ class _LoginViewState extends State<LoginView> {
             child: Form(
               key: formKey,
               child: Scaffold(
-                backgroundColor: Color(scafoldColor),
+                backgroundColor: const Color(scafoldColor),
                 body: SafeArea(
                   child: SingleChildScrollView(
                     child: Padding(
@@ -74,7 +74,7 @@ class _LoginViewState extends State<LoginView> {
                       ),
                       child: Column(
                         children: [
-                          Text('Login', style: AppTextStyles.style18BoldBlack),
+                          const Text('Login', style: AppTextStyles.style18BoldBlack),
                           const SizedBox(height: spacebetweenSections),
                           const Text(
                             'Hi Welcome back, you’ve been missed',
@@ -115,7 +115,7 @@ class _LoginViewState extends State<LoginView> {
                                         !obscure
                                             ? CupertinoIcons.eye
                                             : Icons.visibility_off,
-                                        color: Color(iconsColor),
+                                        color: const Color(iconsColor),
                                         size: iconsSize,
                                       ),
                                     ),
@@ -229,6 +229,7 @@ class _LoginViewState extends State<LoginView> {
                 titleButton: "Go to home",
                 onPressed: () {
                   Navigator.pop(dialogContext);
+                  context.go(homeView);
                 },
               ),
             ),

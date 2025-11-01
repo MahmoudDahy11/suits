@@ -21,7 +21,7 @@ class LocalStorageService {
     String? name,
     String? photoUrl,
   }) async {
-    var box = Hive.box(boxName);
+    final box = Hive.box(boxName);
     await box.put('uid', uid);
     await box.put('email', email);
     await box.put('name', name ?? '');
@@ -30,12 +30,12 @@ class LocalStorageService {
   }
 
   static bool isLoggedIn() {
-    var box = Hive.box(boxName);
+    final box = Hive.box(boxName);
     return box.get('isLoggedIn', defaultValue: false);
   }
 
   static Map<String, dynamic> getUserData() {
-    var box = Hive.box(boxName);
+    final box = Hive.box(boxName);
     return {
       'uid': box.get('uid', defaultValue: ''),
       'email': box.get('email', defaultValue: ''),
@@ -45,7 +45,7 @@ class LocalStorageService {
   }
 
   static Future<void> clearUserData() async {
-    var box = Hive.box(boxName);
+    final box = Hive.box(boxName);
     await box.clear();
   }
 }

@@ -11,7 +11,7 @@ class GetStarted extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(scafoldColor),
+      backgroundColor: const Color(scafoldColor),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -39,23 +39,23 @@ class GetStarted extends StatelessWidget {
                 const SizedBox(height: spacebetweenSections * 2),
                 RichText(
                   textAlign: TextAlign.center,
-                  text: TextSpan(
+                  text: const TextSpan(
                     children: [
-                      const TextSpan(
+                      TextSpan(
                         text: 'The ',
                         style: AppTextStyles.style20BoldBlack,
                       ),
-                      const TextSpan(
+                      TextSpan(
                         text: 'Suits App',
                         style: AppTextStyles.style20BoldPrimaryColor,
                       ),
 
-                      const TextSpan(
+                      TextSpan(
                         text: ' that\n',
                         style: AppTextStyles.style20BoldBlack,
                       ),
 
-                      const TextSpan(
+                      TextSpan(
                         text: 'Makes Your Look Your Best',
                         style: AppTextStyles.style20BoldBlack,
                       ),

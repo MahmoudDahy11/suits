@@ -22,8 +22,8 @@ class CustomListTile extends StatelessWidget {
           vertical: 12,
         ),
         decoration: BoxDecoration(
-          border: Border.all(color: Color(0xffE3E5E9), width: 2),
-          color: Color(fillColorTextField),
+          border: Border.all(color: const Color(0xffE3E5E9), width: 2),
+          color: const Color(fillColorTextField),
           borderRadius: BorderRadius.circular(24),
         ),
         child: Row(

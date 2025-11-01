@@ -44,7 +44,7 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
   }
 
   void _navigateToNextScreen() {
-    bool loggedIn = LocalStorageService.isLoggedIn();
+    final bool loggedIn = LocalStorageService.isLoggedIn();
     Future.delayed(const Duration(seconds: 3), () {
       if (mounted) {
         if (loggedIn) {
@@ -65,7 +65,7 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(splashColor),
+      backgroundColor: const Color(splashColor),
       body: Center(
         child: FadeTransition(
           opacity: _fadeAnimation,
@@ -79,7 +79,7 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
                   width: 100,
                   height: 100,
                   padding: const EdgeInsets.all(defaultCirclerpadding),
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     shape: BoxShape.circle,
                     color: Colors.white,
                   ),

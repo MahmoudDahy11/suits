@@ -76,7 +76,7 @@ class _RootState extends State<Root> {
                                   shape: BoxShape.circle,
                                   color: Colors.transparent,
                                   border: Border.all(
-                                    color: Color(secodaryColor),
+                                    color: const Color(secodaryColor),
                                     width: 3,
                                   ),
                                 ),
@@ -91,7 +91,7 @@ class _RootState extends State<Root> {
                                       );
                                     } else {}
                                   },
-                                  icon: Icon(
+                                  icon: const Icon(
                                     Icons.arrow_back_ios,
                                     size: 30,
                                     color: Color(primaryColor),
@@ -105,7 +105,7 @@ class _RootState extends State<Root> {
                           child: SmoothPageIndicator(
                             controller: controller,
                             count: screens.length - 1,
-                            effect: WormEffect(
+                            effect: const WormEffect(
                               activeDotColor: Color(primaryColor),
                             ),
                           ),
@@ -115,7 +115,7 @@ class _RootState extends State<Root> {
                           padding: const EdgeInsets.all(
                             defaultCirclerpadding - 8,
                           ),
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             shape: BoxShape.circle,
                             color: Color(primaryColor),
                           ),

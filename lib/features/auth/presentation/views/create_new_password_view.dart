@@ -51,7 +51,7 @@ class _CreateNewPasswordViewState extends State<CreateNewPasswordView> {
           child: Form(
             key: formKey,
             child: Scaffold(
-              backgroundColor: Color(scafoldColor),
+              backgroundColor: const Color(scafoldColor),
               body: SafeArea(
                 child: SingleChildScrollView(
                   child: Padding(
@@ -66,7 +66,7 @@ class _CreateNewPasswordViewState extends State<CreateNewPasswordView> {
                           onTap: () => context.go(loginView),
                         ),
                         const SizedBox(height: spacebetweenSections),
-                        Text(
+                        const Text(
                           'Create New Password',
                           style: AppTextStyles.style24BoldBlack,
                         ),
@@ -97,7 +97,7 @@ class _CreateNewPasswordViewState extends State<CreateNewPasswordView> {
                                       !obscure
                                           ? CupertinoIcons.eye
                                           : Icons.visibility_off,
-                                      color: Color(iconsColor),
+                                      color: const Color(iconsColor),
                                       size: iconsSize,
                                     ),
                                   ),
@@ -133,7 +133,7 @@ class _CreateNewPasswordViewState extends State<CreateNewPasswordView> {
                                       !obscure
                                           ? CupertinoIcons.eye
                                           : Icons.visibility_off,
-                                      color: Color(iconsColor),
+                                      color: const Color(iconsColor),
                                       size: iconsSize,
                                     ),
                                   ),

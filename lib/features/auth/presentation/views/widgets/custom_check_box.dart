@@ -12,7 +12,7 @@ class CustomCheckBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Checkbox(
-      activeColor: Color(primaryColor),
+      activeColor: const Color(primaryColor),
       checkColor: Colors.white,
       side: BorderSide(color: Colors.grey.shade400, width: 1),
       value: check,

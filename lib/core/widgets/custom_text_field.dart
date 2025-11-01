@@ -36,11 +36,11 @@ class CustomTextField extends StatelessWidget {
       },
       decoration: InputDecoration(
         prefixIcon: prefixIcon,
-        fillColor: Color(fillColorTextField),
+        fillColor: const Color(fillColorTextField),
         suffixIcon: suffix,
         filled: true,
         hintText: hintText,
-        hintStyle: TextStyle(
+        hintStyle: const TextStyle(
           color: Color(0xffA1A8B0),
           fontSize: 18,
           fontFamily: fontFamily,
@@ -48,15 +48,15 @@ class CustomTextField extends StatelessWidget {
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(24),
-          borderSide: BorderSide(color: Color(0xffE3E5E9), width: 1.5),
+          borderSide: const BorderSide(color: Color(0xffE3E5E9), width: 1.5),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(24),
-          borderSide: BorderSide(color: Color(0xffC5C0BA), width: 1.5),
+          borderSide: const BorderSide(color: Color(0xffC5C0BA), width: 1.5),
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(24),
-          borderSide: BorderSide(color: Color(0xffC5C0BA), width: 2),
+          borderSide: const BorderSide(color: Color(0xffC5C0BA), width: 2),
         ),
       ),
     );

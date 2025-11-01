@@ -35,11 +35,11 @@ class CardView extends StatelessWidget {
               Container(
                 width: 100,
                 height: 100,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Color(0xffF5F8FF),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(Icons.check, color: Color(primaryColor), size: 60),
+                child: const Icon(Icons.check, color: Color(primaryColor), size: 60),
               ),
               const SizedBox(height: spacebetweenSections),
               Text(title ?? '', style: AppTextStyles.style20BoldBlack),
