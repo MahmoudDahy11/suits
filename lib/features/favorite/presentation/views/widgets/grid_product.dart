@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:suits/core/constant/app_constant.dart';
 import 'package:suits/core/utils/home_assets.dart';
 
-import 'card_item.dart';
+import '../../../../home/presentation/views/widgets/card_item.dart';
 
 class GridProduct extends StatelessWidget {
   const GridProduct({super.key});
@@ -18,7 +20,7 @@ class GridProduct extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
-      physics: const NeverScrollableScrollPhysics(),
+      physics: const BouncingScrollPhysics(),
       padding: const EdgeInsets.all(16.0),
       itemCount: images.length,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -28,9 +30,12 @@ class GridProduct extends StatelessWidget {
         mainAxisSpacing: 12,
       ),
       itemBuilder: (context, index) {
-        return CardItem(image: images[index] , onTap: () {
-          
-        },);
+        return CardItem(
+          image: images[index],
+          onTap: () {
+            context.go(itemDetailsView);
+          },
+        );
       },
     );
   }
