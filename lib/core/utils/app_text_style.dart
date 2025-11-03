@@ -14,6 +14,18 @@ abstract class AppTextStyles {
     fontWeight: FontWeight.w700,
     fontFamily: fontFamily2,
   );
+  static const style20BoldBlack3 = TextStyle(
+    color: Colors.black,
+    fontSize: 20,
+    fontWeight: FontWeight.w700,
+    fontFamily: fontFamily3,
+  );
+  static const style16BoldBlack3 = TextStyle(
+    color: Colors.black,
+    fontSize: 16,
+    fontWeight: FontWeight.w700,
+    fontFamily: fontFamily3,
+  );
   static const style24BoldBlack = TextStyle(
     color: Color(0xff101623),
     fontSize: 24,
@@ -63,6 +75,12 @@ abstract class AppTextStyles {
     fontFamily: fontFamily,
   );
   static const style14RegularGrey = TextStyle(
+    color: Color(0xff3B4453),
+    fontSize: 14,
+    fontWeight: FontWeight.w400,
+    fontFamily: fontFamily3,
+  );
+  static const style12RegularGrey = TextStyle(
     color: Color(0xff3B4453),
     fontSize: 14,
     fontWeight: FontWeight.w400,
