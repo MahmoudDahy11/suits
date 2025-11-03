@@ -127,6 +127,7 @@ class _OtpResetPasswordViewState extends State<OtpResetPasswordView> {
                         ),
                         const SizedBox(height: spacebetweenSections),
                         CustomButton(
+                          check: state is OtpLoading,
                           text: 'Verify',
                           onTap: () {
                             if (formKey.currentState!.validate()) {
