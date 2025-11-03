@@ -15,7 +15,8 @@ import 'package:suits/features/auth/presentation/views/login_view.dart';
 import 'package:suits/features/auth/presentation/views/otp_reset_password_view.dart';
 import 'package:suits/features/auth/presentation/views/otp_signup_view.dart';
 import 'package:suits/features/auth/presentation/views/signup_view.dart';
-import 'package:suits/features/home/presentation/views/home_view.dart';
+import 'package:suits/features/home/presentation/views/home_root.dart';
+import 'package:suits/features/home/presentation/views/item_details_view.dart';
 import 'package:suits/features/onboarding/root.dart';
 import 'package:suits/features/onboarding/views/get_started.dart';
 import 'package:suits/features/splash/splash.dart';
@@ -92,12 +93,17 @@ class AppRoutes {
         ),
       ),
       GoRoute(
-        path: homeView,
-        name: 'homeView',
-        builder: (context, state) => const HomeView(),
+        path: itemDetailsView,
+        name: 'itemDetailsView',
+        builder: (context, state) => const ItemDetailsView(),
+      ),
+      GoRoute(
+        path: homeRoot,
+        name: 'homeRoot',
+        builder: (context, state) => const HomeRoot(),
       ),
     ],
     errorBuilder: (context, state) =>
-        const Scaffold(body: Center(child: Text('الصفحة غير موجودة'))),
+        const Scaffold(body: Center(child: Text('Page Not Found'))),
   );
 }
