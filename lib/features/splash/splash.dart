@@ -48,7 +48,7 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
     Future.delayed(const Duration(seconds: 3), () {
       if (mounted) {
         if (loggedIn) {
-          context.go(loginView);
+          context.go(homeRoot);
         } else {
           context.go(root);
         }
