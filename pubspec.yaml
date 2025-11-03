@@ -76,6 +76,8 @@ flutter:
     - assets/icons/
     - assets/signin_icon/
     - assets/textfield_icon/
+    - assets/home/
+    - assets/category/
   #   - images/a_dot_ham.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
@@ -107,8 +109,8 @@ flutter_launcher_icons:
   min_sdk_android: 21
 
 flutter_assets:
-  assets_path: assets/images/
+  assets_path: assets/category
   output_path: lib/core/utils/
-  filename: assets.dart
-  field_prefix: resource
+  filename: categort_assets.dart
+  field_prefix:
   ignore_comments: true
