@@ -74,7 +74,10 @@ class _LoginViewState extends State<LoginView> {
                       ),
                       child: Column(
                         children: [
-                          const Text('Login', style: AppTextStyles.style18BoldBlack),
+                          const Text(
+                            'Login',
+                            style: AppTextStyles.style18BoldBlack,
+                          ),
                           const SizedBox(height: spacebetweenSections),
                           const Text(
                             'Hi Welcome back, you’ve been missed',
@@ -144,6 +147,7 @@ class _LoginViewState extends State<LoginView> {
                           ),
                           const SizedBox(height: spacebetweenSections * 1.5),
                           CustomButton(
+                            check: state is LoginLoading,
                             text: "Login",
                             onTap: () {
                               if (formKey.currentState!.validate()) {
@@ -229,7 +233,7 @@ class _LoginViewState extends State<LoginView> {
                 titleButton: "Go to home",
                 onPressed: () {
                   Navigator.pop(dialogContext);
-                  context.go(homeView);
+                  context.go(homeRoot);
                 },
               ),
             ),
@@ -238,4 +242,5 @@ class _LoginViewState extends State<LoginView> {
       },
     );
   }
+
 }
