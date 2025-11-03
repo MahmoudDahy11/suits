@@ -7,6 +7,10 @@ const int secodaryColor = 0xff4E6542;
 const int fillColorTextField = 0xffF9FAFB;
 const int arrowIconColor = 0xff101623;
 const int iconsColor = 0xffA1A8B0;
+const int green = 0XFF4E6542;
+const int darkGrey = 0XFF323232;
+const int red = 0XFFC11D1D;
+const int grey = 0XFF979696;
 
 const String fontFamily = 'Poppins';
 const String fontFamily2 = 'Montserrat';
@@ -27,4 +31,5 @@ const String forgetPasswordView = '/forgetPassword';
 const String otpSignupView = '/otpSignupView';
 const String otpResetPasswordView = '/otpResetPasswordView';
 const String createNewPasswordView = '/createNewPasswordView';
-const String homeView = '/homeView';
+const String homeRoot = "/homeRoot";
+const String itemDetailsView = "/itemDetailsView";
