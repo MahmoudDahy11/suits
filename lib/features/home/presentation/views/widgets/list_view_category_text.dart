@@ -3,7 +3,9 @@ import 'package:suits/core/constant/app_constant.dart';
 import 'package:suits/core/utils/app_text_style.dart';
 
 class ListViewCategoryText extends StatefulWidget {
-  const ListViewCategoryText({super.key});
+  final void Function(String category) onCategorySelected;
+
+  const ListViewCategoryText({super.key, required this.onCategorySelected});
 
   @override
   State<ListViewCategoryText> createState() => _ListViewCategoryTextState();
@@ -19,6 +21,14 @@ class _ListViewCategoryTextState extends State<ListViewCategoryText> {
   ];
 
   final ValueNotifier<int> selectedIndex = ValueNotifier<int>(0);
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+        widget.onCategorySelected(categories[selectedIndex.value]);
+    });
+  }
 
   @override
   void dispose() {
@@ -40,6 +50,7 @@ class _ListViewCategoryTextState extends State<ListViewCategoryText> {
               return GestureDetector(
                 onTap: () {
                   selectedIndex.value = index;
+                  widget.onCategorySelected(categories[index]);
                 },
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
