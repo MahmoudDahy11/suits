@@ -6,10 +6,11 @@ class CustomAppBar extends StatelessWidget {
   const CustomAppBar({super.key, required this.title, this.onTap});
   final String title;
   final VoidCallback? onTap;
+
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         GestureDetector(
           onTap: onTap ?? () {},
@@ -19,8 +20,9 @@ class CustomAppBar extends StatelessWidget {
             size: iconsSize,
           ),
         ),
-        SizedBox(width: MediaQuery.sizeOf(context).width * 0.32),
+
         Text(title, style: AppTextStyles.style18BoldBlack),
+        const SizedBox(width: iconsSize),
       ],
     );
   }
