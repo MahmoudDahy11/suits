@@ -1,5 +1,10 @@
+import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
+import 'package:suits/core/api/api_service.dart';
 import 'package:suits/features/auth/presentation/cubits/google_cubit/google_cubit.dart';
+import 'package:suits/features/home/data/repo/product_repo_impl.dart';
+import 'package:suits/features/home/domain/repo/product_repo.dart';
+import 'package:suits/features/home/presentation/cubits/get_product/get_product_cubit.dart';
 import '../../features/auth/data/repo/auth_repo_implement.dart';
 import '../../features/auth/data/repo/otp_repo_implement.dart';
 import '../../features/auth/data/service/firebase_auth.dart';
@@ -25,6 +30,7 @@ Future<void> getItSetup() async {
   // services
   getIt.registerLazySingleton<FirebaseService>(() => FirebaseService());
   getIt.registerLazySingleton<OtpService>(() => OtpService());
+  getIt.registerLazySingleton<ApiService>(() => ApiService(Dio()));
 
   // repo
   getIt.registerLazySingleton<FirebaseAuthRepo>(
@@ -32,6 +38,9 @@ Future<void> getItSetup() async {
   );
   getIt.registerLazySingleton<OtpRepository>(
     () => OtpRepositoryImpl(otpService: getIt<OtpService>()),
+  );
+  getIt.registerLazySingleton<ProductRepo>(
+    () => ProductRepoImpl(ApiService(Dio())),
   );
 
   // Cubits
@@ -41,4 +50,6 @@ Future<void> getItSetup() async {
   getIt.registerFactory(() => OtpCubit(getIt()));
   getIt.registerFactory(() => ForgetPasswordCubit(getIt()));
   getIt.registerFactory(() => GoogleCubit(getIt()));
+
+  getIt.registerFactory(() => GetProductCubit(getIt()));
 }
