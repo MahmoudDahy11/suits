@@ -1,6 +1,6 @@
-
 import 'package:flutter/material.dart';
 import 'package:suits/core/utils/app_text_style.dart';
+import 'package:suits/features/home/domain/entity/product_entity.dart';
 
 import '../../../../../core/constant/app_constant.dart';
 import 'custom_color.dart';
@@ -9,8 +9,8 @@ import 'custom_quantity.dart';
 import 'custom_size.dart';
 
 class ProductDetailsSheet extends StatelessWidget {
-  const ProductDetailsSheet({super.key});
-
+  const ProductDetailsSheet({super.key, required this.productEntity});
+  final ProductEntity productEntity;
   @override
   Widget build(BuildContext context) {
     return Positioned(
@@ -40,8 +40,8 @@ class ProductDetailsSheet extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: spacebetweenSections / 2),
-              const Text(
-                'Classic Blazer',
+               Text(
+                productEntity.slug,
                 style: AppTextStyles.style20BoldBlack,
               ),
               const SizedBox(height: spacebetweenSections / 1.5),
@@ -50,8 +50,8 @@ class ProductDetailsSheet extends StatelessWidget {
                 style: AppTextStyles.style16SemiBoldBlack,
               ),
               const SizedBox(height: spacebetweenSections / 3),
-              const Text(
-                'Cotton sweat shirt with a text print',
+               Text(
+                productEntity.description ?? '',
                 style: AppTextStyles.style15SemiBoldGrey,
               ),
               const SizedBox(height: spacebetweenSections / 2),
