@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:suits/core/constant/app_constant.dart';
 import 'package:suits/core/utils/app_text_style.dart';
@@ -10,33 +9,45 @@ class NewCollectionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.sizeOf(context).width;
+
     return Container(
       padding: const EdgeInsets.all(16),
-      height: MediaQuery.sizeOf(context).height * 0.2,
       width: double.infinity,
       decoration: const BoxDecoration(color: Colors.white),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Column(
-            children: [
-              const Text(
-                'New Collection',
-                style: AppTextStyles.style16BoldBlack3,
-              ),
-              const SizedBox(height: spacebetweenSections / 3),
-              const Text(
-                'Disscount 50% for \nthe first transaction',
-                style: AppTextStyles.style12RegularGrey,
-              ),
-              const SizedBox(height: spacebetweenSections / 2),
-              SizedBox(
-                width: MediaQuery.sizeOf(context).width * 0.35,
-                child: CustomButton(text: 'Shop Now', onTap: () {}),
-              ),
-            ],
+     
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'New Collection',
+                  style: AppTextStyles.style16BoldBlack3,
+                ),
+                const SizedBox(height: spacebetweenSections / 3),
+                const Text(
+                  'Disscount 50% for \nthe first transaction',
+                  style: AppTextStyles.style12RegularGrey,
+                ),
+                const SizedBox(height: spacebetweenSections / 2),
+                SizedBox(
+                  width: screenWidth * 0.35,
+                  child: CustomButton(text: 'Shop Now', onTap: () {}),
+                ),
+              ],
+            ),
           ),
-          const Spacer(),
-          Image.asset(HomeAssets.homeHomeCard),
+
+          const SizedBox(width: 12),
+
+          SizedBox(
+            width: screenWidth * 0.28,
+            child: Image.asset(HomeAssets.homeHomeCard, fit: BoxFit.contain),
+          ),
         ],
       ),
     );
