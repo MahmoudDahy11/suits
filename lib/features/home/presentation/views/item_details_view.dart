@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:suits/core/constant/app_constant.dart';
-import 'package:suits/core/utils/home_assets.dart';
 import 'widgets/icon_arrow_back.dart';
 import 'widgets/product_details_sheet.dart';
+import 'package:suits/features/home/domain/entity/product_entity.dart';
 
-class ItemDetailsView extends StatefulWidget {
-  const ItemDetailsView({super.key});
+class ItemDetailsView extends StatelessWidget {
+  final ProductEntity product;
+  const ItemDetailsView({super.key, required this.product});
 
-  @override
-  State<ItemDetailsView> createState() => _ItemDetailsViewState();
-}
-
-class _ItemDetailsViewState extends State<ItemDetailsView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,14 +20,18 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
             top: 0,
             left: 0,
             right: 0,
-            child: Image.asset(
-              HomeAssets.homeHomeS5,
+            child: Image.network(
+              product.urls.full,
               fit: BoxFit.cover,
               height: MediaQuery.sizeOf(context).height * .6,
             ),
           ),
-          const IconArrowBack(),
-          const ProductDetailsSheet(),
+          IconArrowBack(
+            onTap: () {
+              context.pop();
+            },
+          ),
+          ProductDetailsSheet(productEntity: product),
         ],
       ),
     );
