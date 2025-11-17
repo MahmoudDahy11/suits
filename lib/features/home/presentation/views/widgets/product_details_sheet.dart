@@ -40,17 +40,14 @@ class ProductDetailsSheet extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: spacebetweenSections / 2),
-               Text(
-                productEntity.slug,
-                style: AppTextStyles.style20BoldBlack,
-              ),
+              Text(productEntity.slug, style: AppTextStyles.style20BoldBlack),
               const SizedBox(height: spacebetweenSections / 1.5),
               const Text(
                 'Product Details',
                 style: AppTextStyles.style16SemiBoldBlack,
               ),
               const SizedBox(height: spacebetweenSections / 3),
-               Text(
+              Text(
                 productEntity.description ?? '',
                 style: AppTextStyles.style15SemiBoldGrey,
               ),
