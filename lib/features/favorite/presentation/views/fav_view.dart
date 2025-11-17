@@ -1,12 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:suits/core/constant/app_constant.dart';
 import 'package:suits/core/utils/app_text_style.dart';
-
+import '../cubits/favorite/favorite_cubit.dart';
 import 'widgets/grid_product.dart';
 import 'widgets/list_view_category_text_fav.dart';
 
-class FavView extends StatelessWidget {
+class FavView extends StatefulWidget {
   const FavView({super.key});
+
+  @override
+  State<FavView> createState() => _FavViewState();
+}
+
+class _FavViewState extends State<FavView> {
+  @override
+  void initState() {
+    super.initState();
+   
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<FavoriteCubit>().loadFavorites();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
