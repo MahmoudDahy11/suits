@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:suits/core/constant/app_constant.dart';
 import 'package:suits/core/utils/app_text_style.dart';
@@ -15,7 +14,6 @@ class _ListViewCategoryTextFavState extends State<ListViewCategoryTextFav> {
   final List<String> categories = const [
     'All',
     'Blazar',
-    'Popular',
     'Shirt',
     'Pant',
     'Shoes',
