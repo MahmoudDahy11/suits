@@ -1,7 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:suits/core/api/api_service.dart';
 import 'package:suits/features/auth/presentation/cubits/google_cubit/google_cubit.dart';
+import 'package:suits/features/cart/data/repo/cart_repo_impl.dart';
+import 'package:suits/features/cart/domain/repo/cart_repo.dart';
+import 'package:suits/features/cart/presentation/cubits/cart/cart_cubit.dart';
+import 'package:suits/features/favorite/data/repo/fav_repo_impl.dart';
+import 'package:suits/features/favorite/data/service/fav_service.dart';
+import 'package:suits/features/favorite/domain/repo/fav_repo.dart';
+import 'package:suits/features/favorite/presentation/cubits/favorite/favorite_cubit.dart';
 import 'package:suits/features/home/data/repo/product_repo_impl.dart';
 import 'package:suits/features/home/domain/repo/product_repo.dart';
 import 'package:suits/features/home/presentation/cubits/get_product/get_product_cubit.dart';
@@ -16,6 +24,7 @@ import '../../features/auth/presentation/cubits/login_cubit/login_cubit.dart';
 import '../../features/auth/presentation/cubits/otp_cubit/otp_cubit.dart';
 import '../../features/auth/presentation/cubits/signout_cubit/signout_cubit.dart';
 import '../../features/auth/presentation/cubits/signup_cubit/signup_cubit.dart';
+import '../../features/cart/data/services/cart_firestore_service.dart';
 
 /*
  * this file is responsible for setting up the GetIt service locator
@@ -32,6 +41,13 @@ Future<void> getItSetup() async {
   getIt.registerLazySingleton<OtpService>(() => OtpService());
   getIt.registerLazySingleton<ApiService>(() => ApiService(Dio()));
 
+  getIt.registerLazySingleton<CartService>(
+    () => CartService(firestore: FirebaseFirestore.instance),
+  );
+
+  getIt.registerLazySingleton<FavoriteService>(
+    () => FavoriteService(firestore: FirebaseFirestore.instance),
+  );
   // repo
   getIt.registerLazySingleton<FirebaseAuthRepo>(
     () => FirebaseAuthRepoImplement(getIt<FirebaseService>()),
@@ -42,6 +58,16 @@ Future<void> getItSetup() async {
   getIt.registerLazySingleton<ProductRepo>(
     () => ProductRepoImpl(ApiService(Dio())),
   );
+  getIt.registerLazySingleton<CartRepository>(
+    () => CartRepositoryImpl(
+      service: CartService(firestore: FirebaseFirestore.instance),
+    ),
+  );
+  getIt.registerLazySingleton<FavoriteRepository>(
+    () => FavoriteRepositoryImpl(
+      service: FavoriteService(firestore: FirebaseFirestore.instance),
+    ),
+  );
 
   // Cubits
   getIt.registerFactory(() => SignupCubit(getIt()));
@@ -50,6 +76,9 @@ Future<void> getItSetup() async {
   getIt.registerFactory(() => OtpCubit(getIt()));
   getIt.registerFactory(() => ForgetPasswordCubit(getIt()));
   getIt.registerFactory(() => GoogleCubit(getIt()));
-
   getIt.registerFactory(() => GetProductCubit(getIt()));
+  getIt.registerFactory(() => CartCubit(repository: getIt<CartRepository>()));
+  getIt.registerFactory(
+    () => FavoriteCubit(repository: getIt<FavoriteRepository>()),
+  );
 }
