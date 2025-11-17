@@ -15,6 +15,9 @@ import 'package:suits/features/auth/presentation/views/login_view.dart';
 import 'package:suits/features/auth/presentation/views/otp_reset_password_view.dart';
 import 'package:suits/features/auth/presentation/views/otp_signup_view.dart';
 import 'package:suits/features/auth/presentation/views/signup_view.dart';
+import 'package:suits/features/home/domain/entity/product_entity.dart';
+import 'package:suits/features/home/presentation/cubits/get_product/get_product_cubit.dart';
+import 'package:suits/features/home/presentation/views/category_view.dart';
 import 'package:suits/features/home/presentation/views/home_root.dart';
 import 'package:suits/features/home/presentation/views/item_details_view.dart';
 import 'package:suits/features/onboarding/root.dart';
@@ -95,8 +98,24 @@ class AppRoutes {
       GoRoute(
         path: itemDetailsView,
         name: 'itemDetailsView',
-        builder: (context, state) => const ItemDetailsView(),
+        builder: (context, state) {
+          final product = state.extra as ProductEntity;
+          return ItemDetailsView(product: product);
+        },
       ),
+      GoRoute(
+        path: categoryView,
+        name: 'categoryView',
+        builder: (context, state) {
+          final String category =
+              state.uri.queryParameters['category'] ?? 'suit';
+          return BlocProvider(
+            create: (context) => getIt<GetProductCubit>(),
+            child: CategoryView(categoryQuery: category),
+          );
+        },
+      ),
+
       GoRoute(
         path: homeRoot,
         name: 'homeRoot',
