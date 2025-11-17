@@ -1,32 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:suits/core/utils/app_text_style.dart';
 import 'package:suits/core/constant/app_constant.dart';
-import 'package:suits/features/home/domain/entity/product_entity.dart';
+import 'package:suits/features/favorite/presentation/cubits/favorite/favorite_cubit.dart';
+import 'package:suits/features/favorite/domain/entity/fav_item_entity.dart';
+import '../../../domain/entity/product_entity.dart';
 
-class CardItem extends StatefulWidget {
-  const CardItem({super.key, required this.onTap, required this.productEntity});
-  final VoidCallback onTap;
+class CardItem extends StatelessWidget {
   final ProductEntity productEntity;
+  final VoidCallback onTap;
 
-  @override
-  State<CardItem> createState() => _CardItemState();
-}
-
-class _CardItemState extends State<CardItem> {
-  final ValueNotifier<bool> _isCheckNotifier = ValueNotifier<bool>(false);
-
-  @override
-  void dispose() {
-    _isCheckNotifier.dispose();
-    super.dispose();
-  }
+  const CardItem({super.key, required this.productEntity, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
+    final product = productEntity;
+    final itemToToggle = FavoriteItemEntity(product: product);
+
     return GestureDetector(
-      onTap: widget.onTap,
+      onTap: onTap,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -37,9 +31,9 @@ class _CardItemState extends State<CardItem> {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),
                   child: CachedNetworkImage(
-                    imageUrl: widget.productEntity.urls.full,
+                    imageUrl: product.urls.full,
                     fit: BoxFit.cover,
-                    cacheKey: widget.productEntity.id,
+                    cacheKey: product.id,
                     placeholder: (context, url) => Skeletonizer(
                       effect: ShimmerEffect(
                         baseColor: Colors.grey.shade300,
@@ -57,16 +51,23 @@ class _CardItemState extends State<CardItem> {
                   child: Container(
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Colors.grey.shade100.withValues(alpha: .7),
+                      color: Colors.grey.shade100.withOpacity(0.7),
                     ),
-                    child: ValueListenableBuilder<bool>(
-                      valueListenable: _isCheckNotifier,
-                      builder: (context, isCheck, child) {
+                    child: BlocBuilder<FavoriteCubit, FavoriteState>(
+                      builder: (context, state) {
+                        final isCurrentlyFavorite = context
+                            .read<FavoriteCubit>()
+                            .isFavorite(product.id);
+
                         return IconButton(
-                          onPressed: () => _isCheckNotifier.value = !isCheck,
+                          onPressed: () {
+                            context.read<FavoriteCubit>().toggleFavorite(
+                              itemToToggle,
+                            );
+                          },
                           icon: Icon(
                             Icons.favorite,
-                            color: isCheck
+                            color: isCurrentlyFavorite
                                 ? const Color(primaryColor)
                                 : Colors.grey.shade600,
                           ),
@@ -83,7 +84,7 @@ class _CardItemState extends State<CardItem> {
             children: [
               Flexible(
                 child: Text(
-                  widget.productEntity.slug,
+                  product.slug,
                   style: AppTextStyles.style16BoldBlack3,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -91,7 +92,10 @@ class _CardItemState extends State<CardItem> {
               ),
               const Spacer(),
               const Icon(Icons.star, color: Colors.amber, size: 18),
-              const Text('4.9', style: AppTextStyles.style12RegularGrey),
+              Text(
+                product.likes.toString(),
+                style: AppTextStyles.style12RegularGrey,
+              ),
             ],
           ),
           const SizedBox(height: 4.0),
