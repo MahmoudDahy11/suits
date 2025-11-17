@@ -3,7 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:suits/core/constant/app_constant.dart';
 import 'package:suits/core/service/get_it.dart';
 import 'package:suits/features/auth/presentation/cubits/signout_cubit/signout_cubit.dart';
+import 'package:suits/features/cart/presentation/cubits/cart/cart_cubit.dart';
 import 'package:suits/features/cart/presentation/views/cart_view.dart';
+import 'package:suits/features/favorite/presentation/cubits/favorite/favorite_cubit.dart';
 import 'package:suits/features/favorite/presentation/views/fav_view.dart';
 import 'package:suits/features/home/presentation/cubits/get_product/get_product_cubit.dart';
 import 'package:suits/features/home/presentation/views/home_view.dart';
@@ -43,48 +45,105 @@ class _HomeRootState extends State<HomeRoot> {
     );
   }
 
+  Widget _buildIconWithBadge(Widget iconWidget, int count) {
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        iconWidget,
+        if (count > 0)
+          Positioned(
+            right: -6,
+            top: -6,
+            child: Container(
+              padding: const EdgeInsets.all(2),
+              decoration: BoxDecoration(
+                color: Colors.red,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.white, width: 1.5),
+              ),
+              constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
+              child: Text(
+                count.toString(),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(scafoldColor),
-      body: PageView(
-        controller: controller,
-        physics: const NeverScrollableScrollPhysics(),
-        children: screens,
-        onPageChanged: (index) => setState(() => selectedIndex = index),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        currentIndex: selectedIndex,
-        onTap: _onItemTapped,
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: const Color(primaryColor),
-        unselectedItemColor: Colors.grey,
-        backgroundColor: Colors.white,
-        elevation: 10,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            activeIcon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart_outlined),
-            activeIcon: Icon(Icons.shopping_cart),
-            label: 'Cart',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite_border),
-            activeIcon: Icon(Icons.favorite),
-            label: 'Favorite',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline),
-            activeIcon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => getIt<FavoriteCubit>()),
+        BlocProvider(create: (context) => getIt<CartCubit>()),
+      ],
+      child: Scaffold(
+        backgroundColor: const Color(scafoldColor),
+        body: PageView(
+          controller: controller,
+          physics: const NeverScrollableScrollPhysics(),
+          children: screens,
+          onPageChanged: (index) => setState(() => selectedIndex = index),
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          showSelectedLabels: false,
+          showUnselectedLabels: false,
+          currentIndex: selectedIndex,
+          onTap: _onItemTapped,
+          type: BottomNavigationBarType.fixed,
+          selectedItemColor: const Color(primaryColor),
+          unselectedItemColor: Colors.grey,
+          backgroundColor: Colors.white,
+          elevation: 10,
+          items: [
+            // 0: Home Item
+            const BottomNavigationBarItem(
+              icon: Icon(Icons.home_outlined),
+              activeIcon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            // 1: Cart Item
+            const BottomNavigationBarItem(
+              icon: Icon(Icons.shopping_cart_outlined),
+              activeIcon: Icon(Icons.shopping_cart),
+              label: 'Cart',
+            ),
+            // 2: Favorite Item with Badge Logic
+            BottomNavigationBarItem(
+              icon: BlocSelector<FavoriteCubit, FavoriteState, int>(
+                selector: (state) =>
+                    state is FavoriteLoaded ? state.items.length : 0,
+                builder: (context, count) {
+                  return _buildIconWithBadge(
+                    const Icon(Icons.favorite_border),
+                    count,
+                  );
+                },
+              ),
+              activeIcon: BlocSelector<FavoriteCubit, FavoriteState, int>(
+                selector: (state) =>
+                    state is FavoriteLoaded ? state.items.length : 0,
+                builder: (context, count) {
+                  return _buildIconWithBadge(const Icon(Icons.favorite), count);
+                },
+              ),
+              label: 'Favorite',
+            ),
+            // 3: Profile Item
+            const BottomNavigationBarItem(
+              icon: Icon(Icons.person_outline),
+              activeIcon: Icon(Icons.person),
+              label: 'Profile',
+            ),
+          ],
+        ),
       ),
     );
   }
