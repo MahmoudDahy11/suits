@@ -24,6 +24,8 @@ import 'package:suits/features/onboarding/root.dart';
 import 'package:suits/features/onboarding/views/get_started.dart';
 import 'package:suits/features/splash/splash.dart';
 
+import '../../features/favorite/presentation/cubits/favorite/favorite_cubit.dart';
+
 class AppRoutes {
   static final GoRouter router = GoRouter(
     initialLocation: splash,
@@ -109,8 +111,12 @@ class AppRoutes {
         builder: (context, state) {
           final String category =
               state.uri.queryParameters['category'] ?? 'suit';
-          return BlocProvider(
-            create: (context) => getIt<GetProductCubit>(),
+
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider(create: (context) => getIt<GetProductCubit>()),
+              BlocProvider(create: (context) => getIt<FavoriteCubit>()),
+            ],
             child: CategoryView(categoryQuery: category),
           );
         },
