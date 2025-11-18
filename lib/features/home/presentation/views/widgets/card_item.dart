@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import 'package:suits/core/helper/show_snak_bar.dart';
 import 'package:suits/core/utils/app_text_style.dart';
 import 'package:suits/core/constant/app_constant.dart';
 import 'package:suits/features/favorite/presentation/cubits/favorite/favorite_cubit.dart';
@@ -49,28 +50,42 @@ class CardItem extends StatelessWidget {
                   right: 5,
                   top: 5,
                   child: Container(
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Colors.grey.shade100.withOpacity(0.7),
+                      color: Color.fromRGBO(245, 245, 245, 0.7),
                     ),
-                    child: BlocBuilder<FavoriteCubit, FavoriteState>(
-                      builder: (context, state) {
-                        final isCurrentlyFavorite = context
-                            .read<FavoriteCubit>()
-                            .isFavorite(product.id);
+                    child: Builder(
+                      builder: (iconButtonContext) {
+                        return BlocBuilder<FavoriteCubit, FavoriteState>(
+                          builder: (context, state) {
+                            final favoriteCubit = context.read<FavoriteCubit>();
+                            final isCurrentlyFavorite = favoriteCubit
+                                .isFavorite(product.id);
 
-                        return IconButton(
-                          onPressed: () {
-                            context.read<FavoriteCubit>().toggleFavorite(
-                              itemToToggle,
+                            return IconButton(
+                              onPressed: () {
+                                final willBeAdded = !isCurrentlyFavorite;
+
+                                favoriteCubit.toggleFavorite(itemToToggle);
+
+                                if (willBeAdded) {
+                                  showSnakBar(context, 'Added to favorites');
+                                } else {
+                                  showSnakBar(
+                                    context,
+                                    'Removed to favorites',
+                                    isError: true,
+                                  );
+                                }
+                              },
+                              icon: Icon(
+                                Icons.favorite,
+                                color: isCurrentlyFavorite
+                                    ? const Color(primaryColor)
+                                    : Colors.grey.shade600,
+                              ),
                             );
                           },
-                          icon: Icon(
-                            Icons.favorite,
-                            color: isCurrentlyFavorite
-                                ? const Color(primaryColor)
-                                : Colors.grey.shade600,
-                          ),
                         );
                       },
                     ),
