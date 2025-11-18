@@ -19,25 +19,41 @@ class HomeRoot extends StatefulWidget {
 }
 
 class _HomeRootState extends State<HomeRoot> {
-  final PageController controller = PageController();
+  late final PageController controller;
 
-  final List<Widget> screens = [
-    BlocProvider(
-      create: (context) => getIt<GetProductCubit>(),
-      child: const HomeView(),
-    ),
-    const CartView(),
-    const FavView(),
-    BlocProvider(
-      create: (context) => getIt<SignoutCubit>(),
-      child: const ProfileView(),
-    ),
-  ];
+  late final List<Widget> screens;
 
-  int selectedIndex = 0;
+  int _selectedIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = PageController();
+
+    screens = [
+      BlocProvider(
+        create: (context) => getIt<GetProductCubit>(),
+        child: const HomeView(),
+      ),
+      const CartView(),
+      const FavView(),
+      BlocProvider(
+        create: (context) => getIt<SignoutCubit>(),
+        child: const ProfileView(),
+      ),
+    ];
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
 
   void _onItemTapped(int index) {
-    setState(() => selectedIndex = index);
+    if (_selectedIndex == index) return;
+
+    setState(() => _selectedIndex = index);
     controller.animateToPage(
       index,
       duration: const Duration(milliseconds: 300),
@@ -46,6 +62,14 @@ class _HomeRootState extends State<HomeRoot> {
   }
 
   Widget _buildIconWithBadge(Widget iconWidget, int count) {
+    const badgePadding = EdgeInsets.all(2);
+    const badgeConstraints = BoxConstraints(minWidth: 16, minHeight: 16);
+    const badgeTextStyle = TextStyle(
+      color: Colors.white,
+      fontSize: 10,
+      fontWeight: FontWeight.bold,
+    );
+
     return Stack(
       clipBehavior: Clip.none,
       children: [
@@ -55,20 +79,16 @@ class _HomeRootState extends State<HomeRoot> {
             right: -6,
             top: -6,
             child: Container(
-              padding: const EdgeInsets.all(2),
+              padding: badgePadding,
               decoration: BoxDecoration(
                 color: Colors.red,
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(color: Colors.white, width: 1.5),
               ),
-              constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
+              constraints: badgeConstraints,
               child: Text(
                 count.toString(),
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 10,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: badgeTextStyle,
                 textAlign: TextAlign.center,
               ),
             ),
@@ -81,21 +101,38 @@ class _HomeRootState extends State<HomeRoot> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => getIt<FavoriteCubit>()),
-        BlocProvider(create: (context) => getIt<CartCubit>()),
+        BlocProvider(
+          create: (context) {
+            final cubit = getIt<FavoriteCubit>();
+            cubit.loadFavorites();
+            return cubit;
+          },
+        ),
+        BlocProvider(
+          create: (context) {
+            final cubit = getIt<CartCubit>();
+
+            cubit.loadCart();
+            return cubit;
+          },
+        ),
       ],
       child: Scaffold(
         backgroundColor: const Color(scafoldColor),
         body: PageView(
           controller: controller,
+
           physics: const NeverScrollableScrollPhysics(),
           children: screens,
-          onPageChanged: (index) => setState(() => selectedIndex = index),
+
+          onPageChanged: (index) {
+            setState(() => _selectedIndex = index);
+          },
         ),
         bottomNavigationBar: BottomNavigationBar(
           showSelectedLabels: false,
           showUnselectedLabels: false,
-          currentIndex: selectedIndex,
+          currentIndex: _selectedIndex,
           onTap: _onItemTapped,
           type: BottomNavigationBarType.fixed,
           selectedItemColor: const Color(primaryColor),
@@ -103,19 +140,34 @@ class _HomeRootState extends State<HomeRoot> {
           backgroundColor: Colors.white,
           elevation: 10,
           items: [
-            // 0: Home Item
             const BottomNavigationBarItem(
               icon: Icon(Icons.home_outlined),
               activeIcon: Icon(Icons.home),
               label: 'Home',
             ),
-            // 1: Cart Item
-            const BottomNavigationBarItem(
-              icon: Icon(Icons.shopping_cart_outlined),
-              activeIcon: Icon(Icons.shopping_cart),
+            BottomNavigationBarItem(
+              icon: BlocSelector<CartCubit, CartState, int>(
+                selector: (state) =>
+                    state is CartLoaded ? state.items.length : 0,
+                builder: (context, count) {
+                  return _buildIconWithBadge(
+                    const Icon(Icons.shopping_cart_outlined),
+                    count,
+                  );
+                },
+              ),
+              activeIcon: BlocSelector<CartCubit, CartState, int>(
+                selector: (state) =>
+                    state is CartLoaded ? state.items.length : 0,
+                builder: (context, count) {
+                  return _buildIconWithBadge(
+                    const Icon(Icons.shopping_cart),
+                    count,
+                  );
+                },
+              ),
               label: 'Cart',
             ),
-            // 2: Favorite Item with Badge Logic
             BottomNavigationBarItem(
               icon: BlocSelector<FavoriteCubit, FavoriteState, int>(
                 selector: (state) =>
@@ -136,7 +188,6 @@ class _HomeRootState extends State<HomeRoot> {
               ),
               label: 'Favorite',
             ),
-            // 3: Profile Item
             const BottomNavigationBarItem(
               icon: Icon(Icons.person_outline),
               activeIcon: Icon(Icons.person),
