@@ -11,10 +11,11 @@ import 'custom_size.dart';
 class ProductDetailsSheet extends StatelessWidget {
   const ProductDetailsSheet({super.key, required this.productEntity});
   final ProductEntity productEntity;
+
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      top: MediaQuery.sizeOf(context).height * .55,
+      top: MediaQuery.sizeOf(context).height * 0.55,
       left: 0,
       right: 0,
       bottom: 0,
@@ -33,14 +34,23 @@ class ProductDetailsSheet extends StatelessWidget {
             children: [
               const Row(
                 children: [
-                  Text("Female Style", style: AppTextStyles.style14RegularGrey),
+                  Text(
+                    "Style",
+                    style: AppTextStyles.style14RegularGrey,
+                  ),
                   Spacer(),
                   Icon(Icons.star, color: Colors.amber),
-                  Text("5.0", style: AppTextStyles.style14RegularGrey),
+                  Text(
+                    "5.0",
+                    style: AppTextStyles.style14RegularGrey,
+                  ),
                 ],
               ),
               const SizedBox(height: spacebetweenSections / 2),
-              Text(productEntity.slug, style: AppTextStyles.style20BoldBlack),
+              Text(
+                productEntity.slug,
+                style: AppTextStyles.style20BoldBlack,
+              ),
               const SizedBox(height: spacebetweenSections / 1.5),
               const Text(
                 'Product Details',
@@ -70,7 +80,7 @@ class ProductDetailsSheet extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: spacebetweenSections / 2),
-              const ProductActionButtons(),
+              ProductActionButtons(product: productEntity),
             ],
           ),
         ),
