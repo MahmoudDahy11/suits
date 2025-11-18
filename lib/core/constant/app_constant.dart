@@ -34,4 +34,5 @@ const String createNewPasswordView = '/createNewPasswordView';
 const String homeRoot = "/homeRoot";
 const String itemDetailsView = "/itemDetailsView";
 const String categoryView = "/categoryView";
+const String paymentView = "/paymentView";
 

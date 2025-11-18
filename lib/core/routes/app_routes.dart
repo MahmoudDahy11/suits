@@ -22,8 +22,10 @@ import 'package:suits/features/home/presentation/views/home_root.dart';
 import 'package:suits/features/home/presentation/views/item_details_view.dart';
 import 'package:suits/features/onboarding/root.dart';
 import 'package:suits/features/onboarding/views/get_started.dart';
+import 'package:suits/features/payment/presentation/views/payment_view.dart';
 import 'package:suits/features/splash/splash.dart';
 
+import '../../features/cart/presentation/cubits/cart/cart_cubit.dart';
 import '../../features/favorite/presentation/cubits/favorite/favorite_cubit.dart';
 
 class AppRoutes {
@@ -102,9 +104,18 @@ class AppRoutes {
         name: 'itemDetailsView',
         builder: (context, state) {
           final product = state.extra as ProductEntity;
-          return ItemDetailsView(product: product);
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider<CartCubit>(create: (_) => getIt<CartCubit>()),
+              BlocProvider<FavoriteCubit>(
+                create: (_) => getIt<FavoriteCubit>(),
+              ),
+            ],
+            child: ItemDetailsView(product: product),
+          );
         },
       ),
+
       GoRoute(
         path: categoryView,
         name: 'categoryView',
@@ -121,7 +132,11 @@ class AppRoutes {
           );
         },
       ),
-
+      GoRoute(
+        path: paymentView,
+        name: 'paymentView',
+        builder: (context, state) => const PaymentView(),
+      ),
       GoRoute(
         path: homeRoot,
         name: 'homeRoot',
