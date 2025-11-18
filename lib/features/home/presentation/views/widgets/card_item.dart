@@ -8,6 +8,7 @@ import 'package:suits/core/constant/app_constant.dart';
 import 'package:suits/features/favorite/presentation/cubits/favorite/favorite_cubit.dart';
 import 'package:suits/features/favorite/domain/entity/fav_item_entity.dart';
 import '../../../domain/entity/product_entity.dart';
+import 'chach_manger.dart';
 
 class CardItem extends StatelessWidget {
   final ProductEntity productEntity;
@@ -35,17 +36,25 @@ class CardItem extends StatelessWidget {
                     imageUrl: product.urls.full,
                     fit: BoxFit.cover,
                     cacheKey: product.id,
-                    placeholder: (context, url) => Skeletonizer(
-                      effect: ShimmerEffect(
-                        baseColor: Colors.grey.shade300,
-                        highlightColor: Colors.grey.shade100,
-                      ),
-                      child: Container(color: Colors.grey.shade300),
-                    ),
+                    cacheManager:
+                        customCacheManager,
+                    placeholder: (context, url) {
+                      if (product.slug == 'Product Name Skeleton') {
+                        return Skeletonizer(
+                          effect: ShimmerEffect(
+                            baseColor: Colors.grey.shade300,
+                            highlightColor: Colors.grey.shade100,
+                          ),
+                          child: Container(color: Colors.grey.shade300),
+                        );
+                      }
+                      return Container(color: Colors.grey.shade300);
+                    },
                     errorWidget: (context, url, error) =>
                         const Icon(Icons.error),
                   ),
                 ),
+
                 Positioned(
                   right: 5,
                   top: 5,

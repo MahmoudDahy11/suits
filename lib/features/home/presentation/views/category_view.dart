@@ -70,6 +70,7 @@ class _CategoryViewState extends State<CategoryView> {
                         builder: (context, favState) {
                           return GridView.builder(
                             physics: const BouncingScrollPhysics(),
+                            cacheExtent: 1000.0,
                             itemCount: itemCount,
                             gridDelegate:
                                 const SliverGridDelegateWithFixedCrossAxisCount(

@@ -34,23 +34,14 @@ class ProductDetailsSheet extends StatelessWidget {
             children: [
               const Row(
                 children: [
-                  Text(
-                    "Style",
-                    style: AppTextStyles.style14RegularGrey,
-                  ),
+                  Text("Style", style: AppTextStyles.style14RegularGrey),
                   Spacer(),
                   Icon(Icons.star, color: Colors.amber),
-                  Text(
-                    "5.0",
-                    style: AppTextStyles.style14RegularGrey,
-                  ),
+                  Text("5.0", style: AppTextStyles.style14RegularGrey),
                 ],
               ),
               const SizedBox(height: spacebetweenSections / 2),
-              Text(
-                productEntity.slug,
-                style: AppTextStyles.style20BoldBlack,
-              ),
+              Text(productEntity.slug, style: AppTextStyles.style20BoldBlack),
               const SizedBox(height: spacebetweenSections / 1.5),
               const Text(
                 'Product Details',
@@ -80,7 +71,7 @@ class ProductDetailsSheet extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: spacebetweenSections / 2),
-              ProductActionButtons(product: productEntity),
+              ProductActionButtons(productEntity: productEntity),
             ],
           ),
         ),

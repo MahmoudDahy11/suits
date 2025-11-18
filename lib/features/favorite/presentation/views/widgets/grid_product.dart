@@ -1,5 +1,8 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:suits/core/constant/app_constant.dart';
+import 'package:suits/core/utils/app_text_style.dart';
 import 'package:suits/features/favorite/presentation/cubits/favorite/favorite_cubit.dart';
 import '../../../../home/presentation/views/widgets/card_item.dart';
 
@@ -11,11 +14,21 @@ class GridProduct extends StatelessWidget {
     return BlocBuilder<FavoriteCubit, FavoriteState>(
       builder: (context, state) {
         if (state is FavoriteLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(
+            child: CupertinoActivityIndicator(
+              radius: 15.0,
+              color: Color(primaryColor),
+            ),
+          );
         } else if (state is FavoriteLoaded) {
           final items = state.items;
           if (items.isEmpty) {
-            return const Center(child: Text("No favorites yet"));
+            return const Center(
+              child: Text(
+                "No favorites yet",
+                style: AppTextStyles.style18BoldBlack,
+              ),
+            );
           }
           return GridView.builder(
             physics: const BouncingScrollPhysics(),
@@ -32,8 +45,9 @@ class GridProduct extends StatelessWidget {
 
               return CardItem(
                 productEntity: favoriteItem.product,
-
-                onTap: () {},
+                onTap: () {
+                  context.push(itemDetailsView, extra: favoriteItem.product);
+                },
               );
             },
           );
