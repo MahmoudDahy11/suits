@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:suits/core/constant/app_constant.dart';
 
 /*
  * showSnakBar function
  * displays a custom styled SnackBar with a given message in the provided context
  */
 void showSnakBar(BuildContext context, String message, {bool isError = false}) {
-  final color = isError ? Colors.redAccent : Colors.green;
+  final color = isError ? Colors.redAccent :const Color(primaryColor);
 
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
