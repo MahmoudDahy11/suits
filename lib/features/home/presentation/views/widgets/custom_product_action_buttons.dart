@@ -1,10 +1,15 @@
-
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:suits/core/constant/app_constant.dart';
 import 'package:suits/core/widgets/custom_button.dart';
+import 'package:suits/core/helper/show_snak_bar.dart';
+import 'package:suits/features/cart/domain/entity/cart_item_entity.dart';
+import 'package:suits/features/home/domain/entity/product_entity.dart';
+import 'package:suits/features/cart/presentation/cubits/cart/cart_cubit.dart';
 
 class ProductActionButtons extends StatefulWidget {
-  const ProductActionButtons({super.key});
+  final ProductEntity product;
+  const ProductActionButtons({super.key, required this.product});
 
   @override
   State<ProductActionButtons> createState() => _ProductActionButtonsState();
@@ -49,9 +54,19 @@ class _ProductActionButtonsState extends State<ProductActionButtons> {
               ),
             ),
             const SizedBox(width: spacebetweenSections),
-            SizedBox(
-              width: MediaQuery.sizeOf(context).width * .7,
-              child: CustomButton(text: 'Add To Cart', onTap: () {}),
+            Expanded(
+              child: CustomButton(
+                text: 'Add To Cart',
+                onTap: () {
+                  final item = CartItemEntity(
+                    product: widget.product,
+                    quantity: 1,
+                  );
+                  context.read<CartCubit>().addProduct(item);
+
+                  showSnakBar(context, 'Added to Cart!', isError: false);
+                },
+              ),
             ),
           ],
         ),
