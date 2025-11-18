@@ -128,7 +128,8 @@ class _HomeViewState extends State<HomeView> {
                                     urls: Urls(
                                       full: '',
                                       raw: '',
-                                      regular: '',
+                                      regular:
+                                          'https://placehold.co/400x600/CCCCCC/AAAAAA/png?text=Loading',
                                       small: '',
                                       thumb: '',
                                       smallS3: '',
