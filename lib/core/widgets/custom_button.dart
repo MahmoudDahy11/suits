@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:suits/core/constant/app_constant.dart';
 
@@ -33,7 +34,12 @@ class CustomButton extends StatelessWidget {
                       fontFamily: fontFamily,
                     ),
                   )
-                : const CircularProgressIndicator(),
+                : const Center(
+                    child: CupertinoActivityIndicator(
+                      radius: 15.0,
+                      color: Color(0xffF9FAFB),
+                    ),
+                  ),
           ),
         ),
       ),
