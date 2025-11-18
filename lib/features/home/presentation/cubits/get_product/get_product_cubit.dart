@@ -13,15 +13,26 @@ class GetProductCubit extends Cubit<GetProductState> {
     String? token,
     Map<String, dynamic>? queryParameters,
   }) async {
+    if (isClosed) return;
     emit(GetProductLoading());
+
     final result = await _productRepo.get(
       endPoint: '/search/photos',
       token: token,
       queryParameters: queryParameters,
     );
+
+    if (isClosed) return;
+
     result.fold(
-      (failure) => emit(GetProductFailure(errMessage: failure.errMessage)),
-      (products) => emit(GetProductSuccess(products: products)),
+      (failure) {
+        if (isClosed) return;
+        emit(GetProductFailure(errMessage: failure.errMessage));
+      },
+      (products) {
+        if (isClosed) return;
+        emit(GetProductSuccess(products: products));
+      },
     );
   }
 }

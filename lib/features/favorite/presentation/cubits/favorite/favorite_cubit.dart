@@ -12,15 +12,17 @@ class FavoriteCubit extends Cubit<FavoriteState> {
 
   Future<void> loadFavorites() async {
     try {
-      // لا تُصدر حالة تحميل إذا كانت البيانات موجودة بالفعل ومُحملة
       if (state is! FavoriteLoaded) {
+        if (isClosed) return;
         emit(FavoriteLoading());
       }
-      // استخدام Stream/onSnapshot (يفترض أنه مطبق في الـ Repository/Service)
-      // لضمان التحديث اللحظي إذا أمكن، أو نعتمد على استدعاء getFavorites
+
       final items = await repository.getFavorites();
+
+      if (isClosed) return;
       emit(FavoriteLoaded(items));
     } catch (e) {
+      if (isClosed) return;
       emit(FavoriteFailure(e.toString()));
     }
   }
@@ -32,16 +34,15 @@ class FavoriteCubit extends Cubit<FavoriteState> {
         (i) => i.product.id == item.product.id,
       );
 
-      // 1. تحديث الـ UI فورًا بتعديل قائمة العناصر في الـ Cubit
       final updatedItems = exists
           ? currentState.items
                 .where((i) => i.product.id != item.product.id)
                 .toList()
           : [...currentState.items, item];
 
+      if (isClosed) return;
       emit(FavoriteLoaded(updatedItems));
 
-      // 2. تحديث الـ repository بشكل غير متزامن
       try {
         if (exists) {
           await repository.removeFavorite(item.product.id);
@@ -49,15 +50,13 @@ class FavoriteCubit extends Cubit<FavoriteState> {
           await repository.addFavorite(item);
         }
       } catch (e) {
-        // إذا فشلت عملية الكتابة على Firestore، نعيد الحالة السابقة إلى الـ UI
-        // لضمان تزامن الـ UI مع Firestore
-        emit(FavoriteFailure(e.toString())); // يمكن إظهار خطأ
-        loadFavorites(); // إعادة تحميل القائمة الصحيحة من Firestore
+        if (isClosed) return;
+        emit(FavoriteFailure(e.toString()));
+        loadFavorites();
       }
     }
   }
 
-  // هذه الدالة ستُستخدم في الـ BlocSelector لتحديد حالة القلب
   bool isFavorite(String productId) {
     if (state is FavoriteLoaded) {
       return (state as FavoriteLoaded).items.any(
