@@ -10,7 +10,9 @@ class CartRepositoryImpl implements CartRepository {
 
   @override
   Future<void> addProduct(CartItemEntity item) async {
-    await service.addProduct(CartItemModel(product: item.product, quantity: item.quantity));
+    await service.addProduct(
+      CartItemModel(product: item.product, quantity: item.quantity),
+    );
   }
 
   @override

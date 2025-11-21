@@ -1,10 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:suits/core/constant/app_constant.dart';
 import 'package:suits/core/utils/assets.dart';
 import 'dart:async';
-
 import '../auth/data/service/local_storage.dart';
 
 class Splash extends StatefulWidget {
@@ -22,7 +22,6 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    LocalStorageService.init();
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
@@ -40,20 +39,24 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
 
     _controller.forward();
 
-    _navigateToNextScreen();
+    _initializeAndNavigate();
   }
 
-  void _navigateToNextScreen() {
+  Future<void> _initializeAndNavigate() async {
+    await LocalStorageService.init();
+    final user = FirebaseAuth.instance.currentUser;
     final bool loggedIn = LocalStorageService.isLoggedIn();
-    Future.delayed(const Duration(seconds: 3), () {
-      if (mounted) {
-        if (loggedIn) {
-          context.go(homeRoot);
-        } else {
-          context.go(root);
-        }
+
+    final delay = const Duration(seconds: 3) - const Duration(seconds: 2);
+    await Future.delayed(delay);
+
+    if (mounted) {
+      if (loggedIn && user != null) {
+        context.go(homeRoot);
+      } else {
+        context.go(root);
       }
-    });
+    }
   }
 
   @override

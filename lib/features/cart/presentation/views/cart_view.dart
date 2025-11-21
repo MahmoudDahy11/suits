@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,7 +21,12 @@ class _CartViewState extends State<CartView> {
   @override
   void initState() {
     super.initState();
-    context.read<CartCubit>().loadCart();
+    
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      context.read<CartCubit>().loadCart();
+    } else {
+    }
   }
 
   @override
