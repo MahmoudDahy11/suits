@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:suits/core/constant/app_constant.dart';
@@ -17,9 +18,12 @@ class _FavViewState extends State<FavView> {
   @override
   void initState() {
     super.initState();
-   
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<FavoriteCubit>().loadFavorites();
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        context.read<FavoriteCubit>().loadFavorites();
+      }
     });
   }
 
