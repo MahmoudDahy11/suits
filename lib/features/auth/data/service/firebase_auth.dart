@@ -4,8 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:suits/core/error/custom_excption.dart';
-import 'local_storage.dart';
-import 'otp_service.dart';
 
 /*
  * FirebaseService class
@@ -18,8 +16,10 @@ import 'otp_service.dart';
  */
 class FirebaseService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+  FirebaseFirestore get firestoreInstance => firestore;
 
   Future<User> createUserWithEmailAndPassword({
     required String email,
@@ -27,8 +27,10 @@ class FirebaseService {
     required String name,
   }) async {
     try {
-      final UserCredential credential = await _auth
-          .createUserWithEmailAndPassword(email: email, password: password);
+      final credential = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
       final user = credential.user;
       if (user == null) {
@@ -38,46 +40,9 @@ class FirebaseService {
       await user.updateDisplayName(name);
       await user.reload();
       log("✅ User created: ${user.email}");
-
-      // await user.sendEmailVerification();
-      // log("📩 Verification email sent to: ${user.email}");
-
-      await LocalStorageService.saveUserData(
-        uid: user.uid,
-        email: user.email!,
-        name: name,
-      );
-
-      final otpService = OtpService();
-      final otp = otpService.generateOtp();
-      await otpService.saveOtp(user.uid, otp);
-      await otpService.sendOtpToEmail(user.email!, otp);
-      log("🔑 OTP sent to ${user.email}");
-
       return user;
     } on FirebaseAuthException catch (e) {
-      switch (e.code) {
-        case 'weak-password':
-          throw CustomException(
-            errMessage: 'The password provided is too weak.',
-          );
-        case 'email-already-in-use':
-          throw CustomException(
-            errMessage: 'The account already exists for that email.',
-          );
-        case 'invalid-email':
-          throw CustomException(errMessage: 'The email address is invalid.');
-        case 'operation-not-allowed':
-          throw CustomException(
-            errMessage: 'Email/Password accounts are not enabled.',
-          );
-        default:
-          throw CustomException(
-            errMessage: e.message ?? 'Unknown FirebaseAuth error.',
-          );
-      }
-    } catch (e) {
-      throw CustomException(errMessage: e.toString());
+      throw CustomException(errMessage: e.message ?? 'Firebase Auth error');
     }
   }
 
@@ -86,57 +51,40 @@ class FirebaseService {
     required String password,
   }) async {
     try {
-      final UserCredential credential = await _auth.signInWithEmailAndPassword(
+      final credential = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
 
       final user = credential.user;
-      if (user == null) {
-        throw CustomException(errMessage: 'Sign in failed. Please try again.');
-      }
-
-      await user.reload();
-
-      final otpDoc = await firestore.collection('otps').doc(user.uid).get();
-      if (!otpDoc.exists || otpDoc.data()?['verified'] != true) {
-        throw CustomException(
-          errMessage:
-              'Please verify your email with the OTP before logging in.',
-        );
-      }
-
-      await firestore.collection('users').doc(user.uid).set({
-        'uid': user.uid,
-        'email': user.email,
-        'name': user.displayName ?? '',
-        'createdAt': FieldValue.serverTimestamp(),
-      }, SetOptions(merge: true));
-
-      await LocalStorageService.saveUserData(
-        uid: user.uid,
-        email: user.email!,
-        name: user.displayName,
-      );
+      if (user == null) throw CustomException(errMessage: 'Sign in failed');
 
       return user;
     } on FirebaseAuthException catch (e) {
-      switch (e.code) {
-        case 'invalid-email':
-          throw CustomException(errMessage: 'The email address is invalid.');
-        case 'user-disabled':
-          throw CustomException(
-            errMessage: 'This user account has been disabled.',
-          );
-        case 'user-not-found':
-          throw CustomException(errMessage: 'No user found for that email.');
-        case 'wrong-password':
-          throw CustomException(errMessage: 'Wrong password provided.');
-        default:
-          throw CustomException(
-            errMessage: e.message ?? 'Unknown FirebaseAuth error.',
-          );
+      throw CustomException(errMessage: e.message ?? 'Firebase Auth error');
+    }
+  }
+
+  Future<User> signInWithGoogle() async {
+    try {
+      final googleUser = await _googleSignIn.signIn();
+      if (googleUser == null) {
+        throw CustomException(errMessage: "Google sign-in cancelled.");
       }
+
+      final googleAuth = await googleUser.authentication;
+      final credential = GoogleAuthProvider.credential(
+        idToken: googleAuth.idToken,
+        accessToken: googleAuth.accessToken,
+      );
+
+      final userCredential = await _auth.signInWithCredential(credential);
+      final user = userCredential.user;
+      if (user == null) {
+        throw CustomException(errMessage: "No user returned from Firebase.");
+      }
+
+      return user;
     } catch (e) {
       throw CustomException(errMessage: e.toString());
     }
@@ -145,89 +93,20 @@ class FirebaseService {
   Future<void> signOut() async {
     try {
       await _auth.signOut();
-
-      await LocalStorageService.clearUserData();
     } catch (e) {
-      throw CustomException(errMessage: 'Sign out failed: ${e.toString()}');
+      throw CustomException(errMessage: e.toString());
     }
   }
 
   Future<void> forgetPassword({required String newPassword}) async {
     try {
       final user = _auth.currentUser;
-
       if (user == null) {
-        throw CustomException(errMessage: 'User is not authenticated.');
+        throw CustomException(errMessage: 'User not authenticated');
       }
-
-      // update password
       await user.updatePassword(newPassword);
-
-      await firestore.collection('users').doc(user.uid).set({
-        'uid': user.uid,
-        'email': user.email,
-        'name': user.displayName ?? '',
-        'passwordChangedAt': FieldValue.serverTimestamp(),
-      }, SetOptions(merge: true));
-
-      await LocalStorageService.saveUserData(
-        uid: user.uid,
-        email: user.email!,
-        name: user.displayName,
-      );
     } catch (e) {
       throw CustomException(errMessage: e.toString());
-    }
-  }
-
-  Future<User> signInWithGoogle() async {
-    try {
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-
-      if (googleUser == null) {
-        throw CustomException(errMessage: "Google sign-in was cancelled.");
-      }
-
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
-
-      final credential = GoogleAuthProvider.credential(
-        idToken: googleAuth.idToken,
-      );
-
-      final UserCredential userCredential = await _auth.signInWithCredential(
-        credential,
-      );
-      final user = userCredential.user;
-
-      if (user == null) {
-        throw CustomException(
-          errMessage: "Google sign-in failed. No user returned.",
-        );
-      }
-
-      await firestore.collection('users').doc(user.uid).set({
-        'uid': user.uid,
-        'email': user.email,
-        'name': user.displayName ?? '',
-        'photoUrl': user.photoURL ?? '',
-        'createdAt': FieldValue.serverTimestamp(),
-      }, SetOptions(merge: true));
-
-      await LocalStorageService.saveUserData(
-        uid: user.uid,
-        email: user.email!,
-        name: user.displayName,
-        photoUrl: user.photoURL,
-      );
-
-      return user;
-    } on FirebaseAuthException catch (e) {
-      throw CustomException(
-        errMessage: e.message ?? "FirebaseAuth Google error.",
-      );
-    } catch (e) {
-      throw CustomException(errMessage: "Google sign-in failed: $e");
     }
   }
 }

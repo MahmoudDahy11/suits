@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
 import 'package:suits/core/api/api_service.dart';
 import 'package:suits/features/auth/presentation/cubits/google_cubit/google_cubit.dart';
@@ -34,7 +35,7 @@ import '../../features/cart/data/services/cart_firestore_service.dart';
  * make sure to call getItSetup() during app initialization
  */
 final getIt = GetIt.instance;
-
+final userId = FirebaseAuth.instance.currentUser!.uid;
 Future<void> getItSetup() async {
   // services
   getIt.registerLazySingleton<FirebaseService>(() => FirebaseService());
@@ -59,10 +60,9 @@ Future<void> getItSetup() async {
     () => ProductRepoImpl(ApiService(Dio())),
   );
   getIt.registerLazySingleton<CartRepository>(
-    () => CartRepositoryImpl(
-      service: CartService(firestore: FirebaseFirestore.instance),
-    ),
+    () => CartRepositoryImpl(service: getIt<CartService>()),
   );
+
   getIt.registerLazySingleton<FavoriteRepository>(
     () => FavoriteRepositoryImpl(
       service: FavoriteService(firestore: FirebaseFirestore.instance),

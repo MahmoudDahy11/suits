@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server/gmail.dart';
+import 'package:suits/core/secret/secret.dart';
 
 class OtpService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -22,6 +23,7 @@ class OtpService {
       'createdAt': FieldValue.serverTimestamp(),
       'expiresAt': DateTime.now().add(otpValidity),
       'canResendAt': DateTime.now().add(resendCooldown),
+      'verified': false,
     });
   }
 
@@ -59,8 +61,16 @@ class OtpService {
     return DateTime.now().isAfter(canResendAt);
   }
 
+  Future<bool> isOtpVerified(String uid) async {
+    final snap = await _firestore.collection('otps').doc(uid).get();
+    if (!snap.exists) return false;
+
+    final data = snap.data()!;
+    return data['verified'] == true;
+  }
+
   Future<void> sendOtpToEmail(String email, String otp) async {
-    final smtpServer = gmail('dahym2028@gmail.com', 'gakr kkld eebr awww');
+    final smtpServer = gmail('dahym2028@gmail.com', otpPassGmail);
 
     final message = Message()
       ..from = const Address('dahym2028@gmail.com', 'Suits')

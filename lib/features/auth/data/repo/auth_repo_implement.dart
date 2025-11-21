@@ -1,21 +1,22 @@
 import 'package:dartz/dartz.dart';
 import 'package:suits/core/error/failure.dart';
 import 'package:suits/features/auth/domain/repo/auth_repo.dart';
-
 import '../../../../core/error/custom_excption.dart';
 import '../../domain/entity/user_entity.dart';
 import '../model/user_model.dart';
 import '../service/firebase_auth.dart';
+import '../service/local_storage.dart';
+import '../service/otp_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-/*
- * FirebaseAuthRepoImplement class
- * implements FirebaseAuthRepo interface
- * uses FirebaseService to perform authentication operations
- */
 class FirebaseAuthRepoImplement extends FirebaseAuthRepo {
   final FirebaseService _firebaseService;
-
   FirebaseAuthRepoImplement(this._firebaseService);
+  
+  FirebaseFirestore get _firestore => _firebaseService.firestore;
+  User? get _currentUser => FirebaseAuth.instance.currentUser;
+  final _otpService = OtpService();
 
   @override
   Future<Either<CustomFailure, UserEntity>> createUserWithEmailAndPassword({
@@ -30,17 +31,29 @@ class FirebaseAuthRepoImplement extends FirebaseAuthRepo {
         name: name,
       );
 
-      UserModel userModel = UserModel.fromFireBase(user);
+      final otp = _otpService.generateOtp();
+      await _otpService.saveOtp(user.uid, otp);
+      await _otpService.sendOtpToEmail(user.email!, otp);
 
+      UserModel userModel = UserModel.fromFirebase(user);
       userModel = UserModel(
         uId: userModel.uId,
         email: userModel.email,
         name: name,
       );
-
       return right(userModel.toEntity());
     } on CustomException catch (ex) {
+      if (ex.errMessage.contains('email-already-in-use')) {
+        return left(
+          CustomFailure(
+            errMessage:
+                'This email is already registered. Please login or reset password.',
+          ),
+        );
+      }
       return left(CustomFailure(errMessage: ex.errMessage));
+    } catch (e) {
+      return left(CustomFailure(errMessage: e.toString()));
     }
   }
 
@@ -54,9 +67,21 @@ class FirebaseAuthRepoImplement extends FirebaseAuthRepo {
         email: email,
         password: password,
       );
+      final isVerified = await _otpService.isOtpVerified(user.uid);
+      if (!isVerified) {
+        await _firebaseService.signOut();
+        throw CustomException(
+          errMessage: 'Account not activated. Please verify your OTP first.',
+        );
+      }
 
-      UserModel userModel = UserModel.fromFireBase(user);
+      await LocalStorageService.saveUserData(
+        uid: user.uid,
+        email: user.email!,
+        name: user.displayName,
+      );
 
+      UserModel userModel = UserModel.fromFirebase(user);
       userModel = UserModel(
         uId: userModel.uId,
         email: userModel.email,
@@ -66,6 +91,8 @@ class FirebaseAuthRepoImplement extends FirebaseAuthRepo {
       return right(userModel.toEntity());
     } on CustomException catch (ex) {
       return left(CustomFailure(errMessage: ex.errMessage));
+    } catch (e) {
+      return left(CustomFailure(errMessage: e.toString()));
     }
   }
 
@@ -84,21 +111,51 @@ class FirebaseAuthRepoImplement extends FirebaseAuthRepo {
     required String newPassword,
   }) async {
     try {
+      final user = _currentUser;
+      if (user == null) {
+        return left(CustomFailure(errMessage: 'User is not authenticated.'));
+      }
+
+      final otp = _otpService.generateOtp();
+      await _otpService.saveOtp(user.uid, otp);
+      await _otpService.sendOtpToEmail(user.email!, otp);
+
       await _firebaseService.forgetPassword(newPassword: newPassword);
+
       return right(unit);
+    } on CustomException catch (ex) {
+      return left(CustomFailure(errMessage: ex.errMessage));
     } catch (e) {
       return left(CustomFailure(errMessage: e.toString()));
     }
   }
 
-  
   @override
   Future<Either<CustomFailure, Unit>> signInWithGoogle() async {
     try {
-      await _firebaseService.signInWithGoogle();
+      final user = await _firebaseService.signInWithGoogle();
+
+      await _firestore.collection('users').doc(user.uid).set({
+        'uid': user.uid,
+        'email': user.email,
+        'name': user.displayName ?? '',
+        'photoUrl': user.photoURL ?? '',
+        'createdAt': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+
+      await LocalStorageService.saveUserData(
+        uid: user.uid,
+        email: user.email!,
+        name: user.displayName,
+        photoUrl: user.photoURL,
+      );
+
       return right(unit);
     } on CustomException catch (ex) {
       return left(CustomFailure(errMessage: ex.errMessage));
+    } catch (e) {
+      return left(CustomFailure(errMessage: e.toString()));
     }
   }
+
 }

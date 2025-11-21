@@ -18,7 +18,7 @@ class UserModel {
    * Factory constructor to create UserModel from Firebase User
    * maps Firebase User properties to UserModel properties
    */
-  factory UserModel.fromFireBase(User user) {
+  factory UserModel.fromFirebase(User user) {
     return UserModel(
       email: user.email ?? '',
       name: user.displayName ?? '',
