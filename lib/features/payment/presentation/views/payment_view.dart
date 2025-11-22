@@ -32,15 +32,17 @@ class PaymentView extends StatefulWidget {
 }
 
 class _PaymentViewState extends State<PaymentView> {
-  String? _selectedPaymentMethod;
+  final ValueNotifier<String?> _selectedPaymentMethodNotifier = ValueNotifier(
+    null,
+  );
 
   void _confirmPayment(BuildContext context) {
-    if (_selectedPaymentMethod == null) {
+    if (_selectedPaymentMethodNotifier.value == null) {
       showSnakBar(context, 'Please select a payment method.', isError: true);
       return;
     }
 
-    if (_selectedPaymentMethod == 'stripe') {
+    if (_selectedPaymentMethodNotifier.value == 'stripe') {
       final paymentIntentInputModel = PaymentIntentInputModel(
         amount: widget.checkoutSummary.totalCost,
         currency: "USD",
@@ -49,10 +51,10 @@ class _PaymentViewState extends State<PaymentView> {
       BlocProvider.of<StripePaymentCubit>(
         context,
       ).makePayment(paymentIntentInputModel: paymentIntentInputModel);
-    } else if (_selectedPaymentMethod == 'paypal') {
+    } else if (_selectedPaymentMethodNotifier.value == 'paypal') {
       final transactionsData = getTransactionsData();
       excutePaypalpayment(context, transactionsData);
-    } else if (_selectedPaymentMethod == 'google') {
+    } else if (_selectedPaymentMethodNotifier.value == 'google') {
       showSnakBar(
         context,
         'Google Pay selected. Implementation missing.',
@@ -164,12 +166,16 @@ class _PaymentViewState extends State<PaymentView> {
                       style: AppTextStyles.style16BoldBlack3,
                     ),
                     const SizedBox(height: spacebetweenSections),
-                    PaymentOptions(
-                      selectedPayment: _selectedPaymentMethod,
-                      onChanged: (newValue) {
-                        setState(() {
-                          _selectedPaymentMethod = newValue;
-                        });
+                    const SizedBox(height: spacebetweenSections),
+                    ValueListenableBuilder<String?>(
+                      valueListenable: _selectedPaymentMethodNotifier,
+                      builder: (context, value, child) {
+                        return PaymentOptions(
+                          selectedPayment: value,
+                          onChanged: (newValue) {
+                            _selectedPaymentMethodNotifier.value = newValue;
+                          },
+                        );
                       },
                     ),
                     const Spacer(),
