@@ -93,6 +93,7 @@ class CheckoutSummary extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
+                  Navigator.pop(context);
                   context.push(paymentView, extra: this);
                 },
                 child: const Text(
