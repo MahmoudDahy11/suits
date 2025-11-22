@@ -8,14 +8,14 @@ class CheckoutSummary extends StatelessWidget {
   final double deliveryFee;
   final double totalCost;
   final void Function(String)? onSubmitted;
-  
+
   const CheckoutSummary({
     super.key,
     required this.subTotal,
     required this.discount,
     required this.deliveryFee,
-    required this.totalCost, 
-     this.onSubmitted,
+    required this.totalCost,
+    this.onSubmitted,
   });
 
   String _formatCurrency(double amount) {
@@ -47,7 +47,7 @@ class CheckoutSummary extends StatelessWidget {
                     ),
                     child: TextField(
                       onSubmitted: onSubmitted,
-                      decoration:const InputDecoration(
+                      decoration: const InputDecoration(
                         hintText: "Promo Code",
                         border: InputBorder.none,
                       ),
@@ -93,7 +93,7 @@ class CheckoutSummary extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
-                  context.push(paymentView);
+                  context.push(paymentView, extra: this);
                 },
                 child: const Text(
                   "Proceed to Checkout",
