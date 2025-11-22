@@ -22,6 +22,7 @@ import 'package:suits/features/home/presentation/views/home_root.dart';
 import 'package:suits/features/home/presentation/views/item_details_view.dart';
 import 'package:suits/features/onboarding/root.dart';
 import 'package:suits/features/onboarding/views/get_started.dart';
+import 'package:suits/features/payment/presentation/cubits/stripe_payment/stripe_payment_cubit.dart';
 import 'package:suits/features/payment/presentation/views/payment_view.dart';
 import 'package:suits/features/splash/splash.dart';
 
@@ -135,7 +136,12 @@ class AppRoutes {
       GoRoute(
         path: paymentView,
         name: 'paymentView',
-        builder: (context, state) => const PaymentView(),
+        builder: (context, state) {
+          return BlocProvider(
+            create: (context) => getIt<StripePaymentCubit>(),
+            child: const PaymentView(),
+          );
+        },
       ),
       GoRoute(
         path: homeRoot,

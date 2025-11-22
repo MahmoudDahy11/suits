@@ -14,6 +14,8 @@ import 'package:suits/features/favorite/presentation/cubits/favorite/favorite_cu
 import 'package:suits/features/home/data/repo/product_repo_impl.dart';
 import 'package:suits/features/home/domain/repo/product_repo.dart';
 import 'package:suits/features/home/presentation/cubits/get_product/get_product_cubit.dart';
+import 'package:suits/features/payment/data/repo/stripe_repo_impl.dart';
+import 'package:suits/features/payment/data/service/stripe_sevice.dart';
 import '../../features/auth/data/repo/auth_repo_implement.dart';
 import '../../features/auth/data/repo/otp_repo_implement.dart';
 import '../../features/auth/data/service/firebase_auth.dart';
@@ -26,6 +28,8 @@ import '../../features/auth/presentation/cubits/otp_cubit/otp_cubit.dart';
 import '../../features/auth/presentation/cubits/signout_cubit/signout_cubit.dart';
 import '../../features/auth/presentation/cubits/signup_cubit/signup_cubit.dart';
 import '../../features/cart/data/services/cart_firestore_service.dart';
+import '../../features/payment/domain/repo/stripe_repo.dart';
+import '../../features/payment/presentation/cubits/stripe_payment/stripe_payment_cubit.dart';
 
 /*
  * this file is responsible for setting up the GetIt service locator
@@ -41,11 +45,10 @@ Future<void> getItSetup() async {
   getIt.registerLazySingleton<FirebaseService>(() => FirebaseService());
   getIt.registerLazySingleton<OtpService>(() => OtpService());
   getIt.registerLazySingleton<ApiService>(() => ApiService(Dio()));
-
+  getIt.registerLazySingleton<StripeSevice>(() => StripeSevice());
   getIt.registerLazySingleton<CartService>(
     () => CartService(firestore: FirebaseFirestore.instance),
   );
-
   getIt.registerLazySingleton<FavoriteService>(
     () => FavoriteService(firestore: FirebaseFirestore.instance),
   );
@@ -62,13 +65,12 @@ Future<void> getItSetup() async {
   getIt.registerLazySingleton<CartRepository>(
     () => CartRepositoryImpl(service: getIt<CartService>()),
   );
-
   getIt.registerLazySingleton<FavoriteRepository>(
     () => FavoriteRepositoryImpl(
       service: FavoriteService(firestore: FirebaseFirestore.instance),
     ),
   );
-
+  getIt.registerLazySingleton<StripeRepo>(() => StripeRepoImpl());
   // Cubits
   getIt.registerFactory(() => SignupCubit(getIt()));
   getIt.registerFactory(() => LoginCubit(getIt()));
@@ -81,4 +83,5 @@ Future<void> getItSetup() async {
   getIt.registerFactory(
     () => FavoriteCubit(repository: getIt<FavoriteRepository>()),
   );
+  getIt.registerFactory(() => StripePaymentCubit(getIt()));
 }
