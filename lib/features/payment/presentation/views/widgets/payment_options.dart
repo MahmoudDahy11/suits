@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:suits/core/constant/app_constant.dart';
 import 'package:suits/core/utils/app_text_style.dart';
@@ -6,21 +5,20 @@ import 'package:suits/core/utils/app_text_style.dart';
 import '../../../../../core/utils/assets.dart';
 
 class PaymentOptions extends StatefulWidget {
-  const PaymentOptions({super.key});
+  final Function(String?) onChanged;
+  final String? selectedPayment;
+
+  const PaymentOptions({
+    super.key,
+    required this.onChanged,
+    required this.selectedPayment,
+  });
 
   @override
   State<PaymentOptions> createState() => _PaymentOptionsState();
 }
 
 class _PaymentOptionsState extends State<PaymentOptions> {
-  final ValueNotifier<String?> selectedPayment = ValueNotifier<String?>(null);
-
-  @override
-  void dispose() {
-    selectedPayment.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -31,15 +29,41 @@ class _PaymentOptionsState extends State<PaymentOptions> {
       child: Column(
         children: [
           _paymentRow(
-            icon: const Icon(Icons.paypal_outlined),
+            icon: ShaderMask(
+              shaderCallback: (bounds) {
+                return const LinearGradient(
+                  colors: [Color(0xFF003087), Color(0xFF009CDE)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ).createShader(bounds);
+              },
+              child: const Icon(
+                Icons.paypal_outlined,
+                size: 28,
+                color: Colors.white,
+              ),
+            ),
             title: 'Pay Pal',
             value: 'paypal',
           ),
           Divider(color: Colors.grey.shade400),
           _paymentRow(
-            icon: Image.asset(Assets.applet),
-            title: 'Apple Pay',
-            value: 'apple',
+            icon: ShaderMask(
+              shaderCallback: (bounds) {
+                return const LinearGradient(
+                  colors: [Color(0xFF6772E5), Color(0xFFAC39FF)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ).createShader(bounds);
+              },
+              child: const Icon(
+                Icons.strikethrough_s_sharp,
+                size: 28,
+                color: Colors.white,
+              ),
+            ),
+            title: 'Stripe Payment',
+            value: 'stripe',
           ),
           Divider(color: Colors.grey.shade400),
           _paymentRow(
@@ -57,32 +81,26 @@ class _PaymentOptionsState extends State<PaymentOptions> {
     required String title,
     required String value,
   }) {
-    return ValueListenableBuilder<String?>(
-      valueListenable: selectedPayment,
-      builder: (context, selected, _) {
-        return Row(
-          children: [
-            const SizedBox(width: 15),
-            icon,
-            const Spacer(flex: 1),
-            Text(title, style: AppTextStyles.style14RegularGrey),
-            const Spacer(flex: 4),
-            Checkbox(
-              value: selected == value,
-              onChanged: (_) {
-                if (selected == value) {
-                  selectedPayment.value = null;
-                } else {
-                  selectedPayment.value = value;
-                }
-              },
-              activeColor: const Color(primaryColor),
-              side: BorderSide(color: Colors.grey.shade400),
-              shape: const CircleBorder(),
-            ),
-          ],
-        );
-      },
+    return Row(
+      children: [
+        const SizedBox(width: 15),
+        icon,
+        const Spacer(flex: 1),
+        Text(title, style: AppTextStyles.style14RegularGrey),
+        const Spacer(flex: 4),
+        Checkbox(
+          value: widget.selectedPayment == value,
+          onChanged: (_) {
+            final String? newValue = widget.selectedPayment == value
+                ? null
+                : value;
+            widget.onChanged(newValue);
+          },
+          activeColor: const Color(primaryColor),
+          side: BorderSide(color: Colors.grey.shade400),
+          shape: const CircleBorder(),
+        ),
+      ],
     );
   }
 }
