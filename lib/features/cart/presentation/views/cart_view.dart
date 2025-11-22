@@ -21,14 +21,14 @@ class _CartViewState extends State<CartView> {
   @override
   void initState() {
     super.initState();
-    
+
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       context.read<CartCubit>().loadCart();
-    } else {
-    }
+    } else {}
   }
 
+  static const double _defaultPrice = 30.0;
   @override
   Widget build(BuildContext context) {
     final cartCubit = context.read<CartCubit>();
@@ -41,7 +41,8 @@ class _CartViewState extends State<CartView> {
               ? previous.items.length
               : 0;
           final currentCount = current is CartLoaded ? current.items.length : 0;
-          return previousCount != currentCount;
+          return previous is CartLoaded != current is CartLoaded ||
+              previousCount != currentCount;
         },
         builder: (context, state) {
           final isCartNotEmpty = state is CartLoaded && state.items.isNotEmpty;
@@ -56,7 +57,7 @@ class _CartViewState extends State<CartView> {
               child: CustomButton(
                 text: 'Show Summary',
                 onTap: () {
-                  _openCheckoutSheet(context);
+                  _openCheckoutSheet(context, state);
                 },
               ),
             ),
@@ -96,7 +97,6 @@ class _CartViewState extends State<CartView> {
                         itemCount: items.length,
                         itemBuilder: (context, index) {
                           final cartItem = items[index];
-
                           return Dismissible(
                             key: ValueKey(cartItem.product.id),
                             direction: DismissDirection.endToStart,
@@ -120,7 +120,10 @@ class _CartViewState extends State<CartView> {
                                 isError: true,
                               );
                             },
-                            child: ProductCartItem(cartItem: cartItem),
+                            child: ProductCartItem(
+                              cartItem: cartItem,
+                              defaultPrice: _defaultPrice,
+                            ),
                           );
                         },
                       );
@@ -136,7 +139,17 @@ class _CartViewState extends State<CartView> {
     );
   }
 
-  void _openCheckoutSheet(BuildContext context) {
+  void _openCheckoutSheet(BuildContext context, CartLoaded state) {
+    final subTotal = state.items.fold<double>(
+      0.0,
+      (sum, item) => sum + (_defaultPrice * item.quantity),
+    );
+
+    const double discount = 18.00;
+    const double deliveryFee = 00.00;
+
+    final totalCost = (subTotal + deliveryFee) - discount;
+
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.white,
@@ -144,9 +157,14 @@ class _CartViewState extends State<CartView> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
       ),
       builder: (context) {
-        return const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-          child: CheckoutSummary(),
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          child: CheckoutSummary(
+            subTotal: subTotal,
+            discount: discount,
+            deliveryFee: deliveryFee,
+            totalCost: totalCost,
+          ),
         );
       },
     );

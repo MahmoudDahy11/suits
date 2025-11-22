@@ -3,7 +3,24 @@ import 'package:go_router/go_router.dart';
 import 'package:suits/core/constant/app_constant.dart';
 
 class CheckoutSummary extends StatelessWidget {
-  const CheckoutSummary({super.key});
+  final double subTotal;
+  final double discount;
+  final double deliveryFee;
+  final double totalCost;
+  final void Function(String)? onSubmitted;
+  
+  const CheckoutSummary({
+    super.key,
+    required this.subTotal,
+    required this.discount,
+    required this.deliveryFee,
+    required this.totalCost, 
+     this.onSubmitted,
+  });
+
+  String _formatCurrency(double amount) {
+    return r'$' + amount.toStringAsFixed(2);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,8 +45,9 @@ class CheckoutSummary extends StatelessWidget {
                       borderRadius: BorderRadius.circular(30),
                       border: Border.all(color: Colors.grey.shade300),
                     ),
-                    child: const TextField(
-                      decoration: InputDecoration(
+                    child: TextField(
+                      onSubmitted: onSubmitted,
+                      decoration:const InputDecoration(
                         hintText: "Promo Code",
                         border: InputBorder.none,
                       ),
@@ -56,21 +74,14 @@ class CheckoutSummary extends StatelessWidget {
                 ),
               ],
             ),
-
             const SizedBox(height: 20),
-
-            _buildRow("Sub-Total", "\$407.94"),
-
-            _buildRow("Delivery Free", "\$25.00"),
-
-            _buildRow("Disscount", "-\$35.00"),
-
+            _buildRow("Sub-Total", _formatCurrency(subTotal)),
+            _buildRow("Delivery Fee", _formatCurrency(deliveryFee)),
+            _buildRow("Discount", "-${_formatCurrency(discount)}"),
             const Divider(height: 30),
-
-            _buildRow("Total Cost", "\$397.94", isBold: true),
+            _buildRow("Total Cost", _formatCurrency(totalCost), isBold: true),
 
             const SizedBox(height: 20),
-
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
