@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +12,7 @@ import 'package:suits/core/utils/app_text_style.dart';
 import 'package:suits/core/widgets/custom_app_bar.dart';
 import 'package:suits/core/widgets/custom_button.dart';
 import 'package:suits/core/widgets/custom_text_field.dart';
+import 'package:suits/features/cart/presentation/cubits/cart/cart_cubit.dart';
 import 'package:suits/features/payment/presentation/cubits/stripe_payment/stripe_payment_cubit.dart';
 
 import '../../data/models/payment_intent_input_model.dart';
@@ -20,10 +20,12 @@ import '../../data/models/paypal_model/amount_details_model.dart';
 import '../../data/models/paypal_model/amount_model.dart';
 import '../../data/models/paypal_model/item_list_model.dart';
 import '../../data/models/paypal_model/order_item_model.dart';
+import 'package:suits/features/cart/presentation/views/widgets/checkout_summary.dart';
 import 'widgets/payment_options.dart';
 
 class PaymentView extends StatefulWidget {
-  const PaymentView({super.key});
+  final CheckoutSummary checkoutSummary;
+  const PaymentView({super.key, required this.checkoutSummary});
 
   @override
   State<PaymentView> createState() => _PaymentViewState();
@@ -40,7 +42,7 @@ class _PaymentViewState extends State<PaymentView> {
 
     if (_selectedPaymentMethod == 'stripe') {
       final paymentIntentInputModel = PaymentIntentInputModel(
-        amount: 100.2,
+        amount: widget.checkoutSummary.totalCost,
         currency: "USD",
         customerId: ApiKeys.customerId,
       );
@@ -79,6 +81,7 @@ class _PaymentViewState extends State<PaymentView> {
           note: "Contact us for any questions on your order.",
           onSuccess: (Map params) async {
             log("onSuccess: $params");
+            context.read<CartCubit>().clearCart();
             showSnakBar(context, "Payment Successful");
           },
           onError: (error) {
@@ -98,26 +101,20 @@ class _PaymentViewState extends State<PaymentView> {
   }
 
   ({AmountModel amount, ItemListModel itemList}) getTransactionsData() {
-    const amount = AmountModel(
-      total: "100",
+    final amount = AmountModel(
+      total: widget.checkoutSummary.totalCost.toString(),
       currency: "USD",
       details: AmountDetailsModel(
-        subtotal: "100",
+        subtotal: widget.checkoutSummary.totalCost.toString(),
         shipping: "0",
         shippingDiscount: 0,
       ),
     );
     final List<OrderItemModel> orders = [
-      const OrderItemModel(
-        name: "Apple",
-        quantity: 4,
-        price: '10',
-        currency: "USD",
-      ),
-      const OrderItemModel(
-        name: "Pineapple",
-        quantity: 5,
-        price: '12',
+      OrderItemModel(
+        name: "Order Payment",
+        quantity: 1,
+        price: widget.checkoutSummary.totalCost.toString(),
         currency: "USD",
       ),
     ];
@@ -127,7 +124,12 @@ class _PaymentViewState extends State<PaymentView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<StripePaymentCubit, StripePaymentState>(
+    return BlocConsumer<StripePaymentCubit, StripePaymentState>(
+      listener: (context, state) {
+        if (state is StripePaymentSuccess) {
+          context.read<CartCubit>().clearCart();
+        }
+      },
       builder: (context, state) {
         return GestureDetector(
           onTap: FocusScope.of(context).unfocus,
