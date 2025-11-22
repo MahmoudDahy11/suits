@@ -41,4 +41,34 @@ class ApiService {
       throw CustomException(errMessage: 'Unexpected error: $e');
     }
   }
+
+  Future<dynamic> post({
+    required String url,
+    String? token,
+    Map<String, dynamic>? body,
+    Map<String, String>? headers,
+    String? contentType,
+  }) async {
+    try {
+      // Map<String, String> headers = {};
+
+      // if (token != null) {
+      //   headers['Authorization'] = 'Bearer $token';
+      // }
+
+      final response = await _dio.post(
+        url,
+        data: body,
+        options: Options(
+          headers: headers ?? {'Authorization': 'Bearer $token'},
+          contentType: contentType,
+        ),
+      );
+      return response;
+    } on DioException catch (e) {
+      throw CustomException(
+        errMessage: ServerFailure.fromDioException(e).errMessage,
+      );
+    }
+  }
 }
