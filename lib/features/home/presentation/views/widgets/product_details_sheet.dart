@@ -5,7 +5,6 @@ import 'package:suits/features/home/domain/entity/product_entity.dart';
 import '../../../../../core/constant/app_constant.dart';
 import 'custom_color.dart';
 import 'custom_product_action_buttons.dart';
-import 'custom_quantity.dart';
 import 'custom_size.dart';
 
 class ProductDetailsSheet extends StatelessWidget {
@@ -34,23 +33,14 @@ class ProductDetailsSheet extends StatelessWidget {
             children: [
               const Row(
                 children: [
-                  Text(
-                    "Style",
-                    style: AppTextStyles.style14RegularGrey,
-                  ),
+                  Text("Style", style: AppTextStyles.style14RegularGrey),
                   Spacer(),
                   Icon(Icons.star, color: Colors.amber),
-                  Text(
-                    "5.0",
-                    style: AppTextStyles.style14RegularGrey,
-                  ),
+                  Text("5.0", style: AppTextStyles.style14RegularGrey),
                 ],
               ),
               const SizedBox(height: spacebetweenSections / 2),
-              Text(
-                productEntity.slug,
-                style: AppTextStyles.style20BoldBlack,
-              ),
+              Text(productEntity.slug, style: AppTextStyles.style20BoldBlack),
               const SizedBox(height: spacebetweenSections / 1.5),
               const Text(
                 'Product Details',
@@ -62,8 +52,8 @@ class ProductDetailsSheet extends StatelessWidget {
                 style: AppTextStyles.style15SemiBoldGrey,
               ),
               const SizedBox(height: spacebetweenSections / 2),
-              const CustomQuantity(),
-              const SizedBox(height: spacebetweenSections),
+              // const CustomQuantity(),
+              // const SizedBox(height: spacebetweenSections),
               Divider(thickness: 2, color: Colors.grey.shade400),
               const Row(
                 children: [

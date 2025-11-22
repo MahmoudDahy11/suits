@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:suits/core/constant/app_constant.dart';
 import 'package:suits/core/widgets/custom_button.dart';
 import 'package:suits/core/helper/show_snak_bar.dart';
@@ -40,12 +42,13 @@ class _ProductActionButtonsState extends State<ProductActionButtons> {
               child: IconButton(
                 onPressed: () {
                   check.value = !check.value;
+                  context.go(homeRoot);
                 },
                 icon: ValueListenableBuilder<bool>(
                   valueListenable: check,
                   builder: (context, isFavorite, _) {
                     return Icon(
-                      isFavorite ? Icons.favorite : Icons.favorite_border,
+                      isFavorite ? Icons.home : CupertinoIcons.home,
                       color: const Color(primaryColor),
                       size: 30,
                     );
@@ -64,7 +67,7 @@ class _ProductActionButtonsState extends State<ProductActionButtons> {
                   );
                   context.read<CartCubit>().addProduct(item);
 
-                  showSnakBar(context, 'Added to Cart!', isError: false);
+                  showSnakBar(context, 'Added to Cart!🛒');
                 },
               ),
             ),
