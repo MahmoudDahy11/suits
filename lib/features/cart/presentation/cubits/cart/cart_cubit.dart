@@ -11,6 +11,7 @@ class CartCubit extends Cubit<CartState> {
   CartCubit({required this.repository}) : super(CartInitial());
 
   Future<void> loadCart() async {
+    if (isClosed) return;
     emit(CartLoading());
     final items = await repository.getCartProducts();
 
@@ -21,25 +22,25 @@ class CartCubit extends Cubit<CartState> {
 
   Future<void> addProduct(CartItemEntity item) async {
     await repository.addProduct(item);
-
+    if (isClosed) return;
     await loadCart();
   }
 
   Future<void> removeProduct(String productId) async {
     await repository.removeProduct(productId);
-
+    if (isClosed) return;
     await loadCart();
   }
 
   Future<void> increaseQuantity(String productId) async {
     await repository.increaseQuantity(productId);
-
+    if (isClosed) return;
     await loadCart();
   }
 
   Future<void> decreaseQuantity(String productId) async {
     await repository.decreaseQuantity(productId);
-
+    if (isClosed) return;
     await loadCart();
   }
 
@@ -58,6 +59,7 @@ class CartCubit extends Cubit<CartState> {
 
   Future<void> clearCart() async {
     await repository.clearCart();
+    if (isClosed) return;
     await loadCart();
   }
 }
