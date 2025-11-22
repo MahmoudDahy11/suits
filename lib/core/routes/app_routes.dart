@@ -24,6 +24,7 @@ import 'package:suits/features/onboarding/root.dart';
 import 'package:suits/features/onboarding/views/get_started.dart';
 import 'package:suits/features/payment/presentation/cubits/stripe_payment/stripe_payment_cubit.dart';
 import 'package:suits/features/payment/presentation/views/payment_view.dart';
+import 'package:suits/features/cart/presentation/views/widgets/checkout_summary.dart';
 import 'package:suits/features/splash/splash.dart';
 
 import '../../features/cart/presentation/cubits/cart/cart_cubit.dart';
@@ -137,9 +138,13 @@ class AppRoutes {
         path: paymentView,
         name: 'paymentView',
         builder: (context, state) {
-          return BlocProvider(
-            create: (context) => getIt<StripePaymentCubit>(),
-            child: const PaymentView(),
+          final checkoutSummary = state.extra as CheckoutSummary;
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider(create: (context) => getIt<StripePaymentCubit>()),
+              BlocProvider(create: (context) => getIt<CartCubit>()),
+            ],
+            child: PaymentView(checkoutSummary: checkoutSummary),
           );
         },
       ),
