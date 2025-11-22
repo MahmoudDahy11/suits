@@ -36,4 +36,11 @@ class CartService {
         .map((doc) => CartItemModel.fromMap(doc.data()))
         .toList();
   }
+
+  Future<void> clearCart() async {
+    final snapshot = await _userCart.get();
+    for (final doc in snapshot.docs) {
+      await doc.reference.delete();
+    }
+  }
 }

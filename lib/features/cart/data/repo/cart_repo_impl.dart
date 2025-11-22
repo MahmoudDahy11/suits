@@ -41,4 +41,9 @@ class CartRepositoryImpl implements CartRepository {
     final items = await service.getProducts();
     return items;
   }
+
+  @override
+  Future<void> clearCart() async {
+    await service.clearCart();
+  }
 }
