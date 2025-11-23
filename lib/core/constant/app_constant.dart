@@ -35,4 +35,6 @@ const String homeRoot = "/homeRoot";
 const String itemDetailsView = "/itemDetailsView";
 const String categoryView = "/categoryView";
 const String paymentView = "/paymentView";
-
+const String thanksView = "/thanksView";
+const String addLocationView = "/addLocationView";
+const String locationDetailsView = "/locationDetailsView";
