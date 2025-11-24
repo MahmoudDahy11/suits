@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:go_router/go_router.dart';
 import 'package:suits/core/constant/app_constant.dart';
 import 'package:suits/core/service/get_it.dart';
@@ -20,18 +19,18 @@ import 'package:suits/features/home/presentation/cubits/get_product/get_product_
 import 'package:suits/features/home/presentation/views/category_view.dart';
 import 'package:suits/features/home/presentation/views/home_root.dart';
 import 'package:suits/features/home/presentation/views/item_details_view.dart';
+import 'package:suits/features/location/presentation/cubits/location/location_cubit.dart';
 import 'package:suits/features/location/presentation/views/add_location_view.dart';
-import 'package:suits/features/location/presentation/views/location_details_view.dart';
 import 'package:suits/features/onboarding/root.dart';
 import 'package:suits/features/onboarding/views/get_started.dart';
 import 'package:suits/features/payment/presentation/cubits/stripe_payment/stripe_payment_cubit.dart';
-import 'package:suits/features/payment/presentation/views/payment_view.dart';
 import 'package:suits/features/cart/presentation/views/widgets/checkout_summary.dart';
 import 'package:suits/features/payment/presentation/views/thanks_view.dart';
 import 'package:suits/features/splash/splash.dart';
-
 import '../../features/cart/presentation/cubits/cart/cart_cubit.dart';
 import '../../features/favorite/presentation/cubits/favorite/favorite_cubit.dart';
+import '../../features/location/presentation/views/location_details_view.dart';
+import '../../features/payment/presentation/views/payment_view.dart';
 
 class AppRoutes {
   static final GoRouter router = GoRouter(
@@ -146,6 +145,7 @@ class AppRoutes {
             providers: [
               BlocProvider(create: (context) => getIt<StripePaymentCubit>()),
               BlocProvider(create: (context) => getIt<CartCubit>()),
+              BlocProvider(create: (context) => getIt<LocationCubit>()),
             ],
             child: PaymentView(checkoutSummary: checkoutSummary),
           );
@@ -164,12 +164,18 @@ class AppRoutes {
       GoRoute(
         path: addLocationView,
         name: 'addLocationView',
-        builder: (context, state) => const AddLocationView(),
+        builder: (context, state) => BlocProvider(
+          create: (context) => getIt<LocationCubit>(),
+          child: const AddLocationView(),
+        ),
       ),
       GoRoute(
         path: locationDetailsView,
         name: 'locationDetailsView',
-        builder: (context, state) => const LocationDetailsView(),
+        builder: (context, state) => BlocProvider(
+          create: (context) => getIt<LocationCubit>(),
+          child: const LocationDetailsView(),
+        ),
       ),
     ],
     errorBuilder: (context, state) =>
