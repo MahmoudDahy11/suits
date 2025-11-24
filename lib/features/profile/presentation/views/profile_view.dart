@@ -3,15 +3,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:suits/core/constant/app_constant.dart';
-import 'package:suits/core/helper/show_snak_bar.dart';
 import 'package:suits/features/auth/presentation/cubits/signout_cubit/signout_cubit.dart';
 import 'package:suits/features/profile/presentation/views/widgets/custom_image_profile.dart';
 import 'package:suits/features/profile/presentation/views/widgets/custom_list_tile_profile.dart';
 import '../../../../core/utils/app_text_style.dart';
-import '../../../auth/presentation/views/widgets/card_view.dart';
+import 'widgets/signout_card.dart';
 
 class ProfileView extends StatefulWidget {
   const ProfileView({super.key});
@@ -62,20 +60,16 @@ class _ProfileViewState extends State<ProfileView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<SignoutCubit, SignoutState>(
-      listener: (context, state) {
-        if (state is SignOutSuccess) {
-          excuteDialog(context);
-        } else if (state is SignOutFailure) {
-          showSnakBar(context, state.errMessage);
-        }
-      },
+    return BlocBuilder<SignoutCubit, SignoutState>(
       builder: (context, state) {
         return GestureDetector(
           onTap: () {
             FocusScope.of(context).unfocus();
           },
           child: Scaffold(
+            bottomNavigationBar: state is SignOutSuccess
+                ? const IntrinsicWidth(child: SignoutCard())
+                : null,
             backgroundColor: const Color(scafoldColor),
             body: SafeArea(
               child: Padding(
@@ -153,33 +147,6 @@ class _ProfileViewState extends State<ProfileView> {
                     );
                   },
                 ),
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  void excuteDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (BuildContext dialogContext) {
-        return Center(
-          child: FractionallySizedBox(
-            widthFactor: 0.8,
-            heightFactor: 0.5,
-            child: Material(
-              type: MaterialType.transparency,
-              child: CardView(
-                title: "Logout",
-                description: "Are You Sure You want to log out?",
-                titleButton: "Yes, Logout",
-                onPressed: () {
-                  Navigator.pop(dialogContext);
-                  context.go(loginView);
-                },
               ),
             ),
           ),
