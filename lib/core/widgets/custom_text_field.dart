@@ -11,33 +11,37 @@ class CustomTextField extends StatelessWidget {
     this.obscureText = false,
     this.prefixIcon,
     this.onChanged,
+    this.controller,
+    this.focusNode,
   });
+
   final String hintText;
   final Widget? suffix;
   final Widget? prefixIcon;
   Function(String?)? onSaved;
   final Function(String)? onChanged;
   bool obscureText;
+  TextEditingController? controller;
+  FocusNode? focusNode;
+
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      controller: controller,
+      focusNode: focusNode,
       onChanged: onChanged,
-      errorBuilder: (context, error) => Text(
-        error,
-        style: TextStyle(color: Colors.red.shade700, fontSize: 12),
-      ),
       obscureText: obscureText,
       onSaved: onSaved,
       validator: (value) {
-        if (value!.isEmpty) {
+        if (value == null || value.isEmpty) {
           return 'This field is required';
         }
         return null;
       },
       decoration: InputDecoration(
         prefixIcon: prefixIcon,
-        fillColor: const Color(fillColorTextField),
         suffixIcon: suffix,
+        fillColor: const Color(fillColorTextField),
         filled: true,
         hintText: hintText,
         hintStyle: const TextStyle(
