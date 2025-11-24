@@ -7,7 +7,7 @@ class PhoneTextField extends StatelessWidget {
     super.key,
     required this.hintText,
     required this.onSaved,
-    required this.onChanged,
+    this.onChanged,
     this.prefixIcon,
   });
 

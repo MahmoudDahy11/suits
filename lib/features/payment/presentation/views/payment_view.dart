@@ -1,6 +1,5 @@
 import 'dart:developer';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_paypal_payment/flutter_paypal_payment.dart';
@@ -13,6 +12,7 @@ import 'package:suits/core/widgets/custom_app_bar.dart';
 import 'package:suits/core/widgets/custom_button.dart';
 import 'package:suits/core/widgets/custom_text_field.dart';
 import 'package:suits/features/cart/presentation/cubits/cart/cart_cubit.dart';
+import 'package:suits/features/location/presentation/cubits/location/location_cubit.dart';
 import 'package:suits/features/payment/presentation/cubits/stripe_payment/stripe_payment_cubit.dart';
 
 import '../../data/models/payment_intent_input_model.dart';
@@ -24,14 +24,20 @@ import 'package:suits/features/cart/presentation/views/widgets/checkout_summary.
 import 'widgets/payment_options.dart';
 
 class PaymentView extends StatefulWidget {
-  final CheckoutSummary checkoutSummary;
   const PaymentView({super.key, required this.checkoutSummary});
+  final CheckoutSummary checkoutSummary;
 
   @override
   State<PaymentView> createState() => _PaymentViewState();
 }
 
 class _PaymentViewState extends State<PaymentView> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<LocationCubit>().getLocations();
+  }
+
   final ValueNotifier<String?> _selectedPaymentMethodNotifier = ValueNotifier(
     null,
   );
@@ -48,18 +54,29 @@ class _PaymentViewState extends State<PaymentView> {
         currency: "USD",
         customerId: ApiKeys.customerId,
       );
-      BlocProvider.of<StripePaymentCubit>(
-        context,
-      ).makePayment(paymentIntentInputModel: paymentIntentInputModel);
+
+      context.read<StripePaymentCubit>().makePayment(
+        paymentIntentInputModel: paymentIntentInputModel,
+      );
     } else if (_selectedPaymentMethodNotifier.value == 'paypal') {
       final transactionsData = getTransactionsData();
       excutePaypalpayment(context, transactionsData);
     } else if (_selectedPaymentMethodNotifier.value == 'google') {
-      showSnakBar(
-        context,
-        'Google Pay selected. Implementation missing.',
-        isError: false,
-      );
+      showSnakBar(context, 'Google Pay selected. Implementation missing.');
+    }
+  }
+
+  void _navigateAfterPayment(BuildContext context) {
+    final locationState = context.read<LocationCubit>().state;
+
+    context.read<CartCubit>().clearCart();
+    showSnakBar(context, "Payment Successful");
+
+    if (locationState is LocationSuccess &&
+        locationState.locations.isNotEmpty) {
+      context.go(locationDetailsView); // لو عنده location يروح للـ Details
+    } else {
+      context.go(addLocationView); // لو مفيش يروح يضيف Location
     }
   }
 
@@ -83,8 +100,7 @@ class _PaymentViewState extends State<PaymentView> {
           note: "Contact us for any questions on your order.",
           onSuccess: (Map params) async {
             log("onSuccess: $params");
-            context.read<CartCubit>().clearCart();
-            showSnakBar(context, "Payment Successful");
+            _navigateAfterPayment(context);
           },
           onError: (error) {
             log("onError: $error");
@@ -92,9 +108,6 @@ class _PaymentViewState extends State<PaymentView> {
             showSnakBar(context, error.toString(), isError: true);
           },
           onCancel: () {
-            if (kDebugMode) {
-              print('cancelled:');
-            }
             Navigator.pop(context);
           },
         ),
@@ -112,6 +125,7 @@ class _PaymentViewState extends State<PaymentView> {
         shippingDiscount: 0,
       ),
     );
+
     final List<OrderItemModel> orders = [
       OrderItemModel(
         name: "Order Payment",
@@ -120,6 +134,7 @@ class _PaymentViewState extends State<PaymentView> {
         currency: "USD",
       ),
     ];
+
     final itemList = ItemListModel(orders: orders);
     return (amount: amount, itemList: itemList);
   }
@@ -129,7 +144,7 @@ class _PaymentViewState extends State<PaymentView> {
     return BlocConsumer<StripePaymentCubit, StripePaymentState>(
       listener: (context, state) {
         if (state is StripePaymentSuccess) {
-          context.read<CartCubit>().clearCart();
+          _navigateAfterPayment(context);
         }
       },
       builder: (context, state) {
@@ -165,7 +180,6 @@ class _PaymentViewState extends State<PaymentView> {
                       'More Payment Options',
                       style: AppTextStyles.style16BoldBlack3,
                     ),
-                    const SizedBox(height: spacebetweenSections),
                     const SizedBox(height: spacebetweenSections),
                     ValueListenableBuilder<String?>(
                       valueListenable: _selectedPaymentMethodNotifier,
