@@ -23,7 +23,9 @@ class SignoutCubit extends Cubit<SignoutState> {
   final FirebaseAuthRepo _firebaseAuthrepo;
 
   Future<void> signOut() async {
+    if (isClosed) return;
     emit(SignOutLoading());
+    if (isClosed) return;
     final result = await _firebaseAuthrepo.signOut();
     result.fold(
       (failure) => emit(SignOutFailure(errMessage: failure.errMessage)),
@@ -39,5 +41,8 @@ class SignoutCubit extends Cubit<SignoutState> {
         emit(SignOutSuccess());
       },
     );
+  }
+  void resetState() {
+    emit(SignOutInitial());
   }
 }

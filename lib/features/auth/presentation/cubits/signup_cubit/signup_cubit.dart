@@ -7,7 +7,6 @@ import '../../../domain/entity/user_entity.dart';
 
 part 'signup_state.dart';
 
-
 /*
  * SignupCubit class
  * extends Cubit with SignupState
@@ -24,7 +23,9 @@ class SignupCubit extends Cubit<SignupState> {
     required String password,
     required String name,
   }) async {
+    if (isClosed) return;
     emit(SignupLoading());
+    if (isClosed) return;
     final result = await _firebaseAuthrepo.createUserWithEmailAndPassword(
       email: email,
       password: password,

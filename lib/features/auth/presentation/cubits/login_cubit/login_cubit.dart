@@ -24,7 +24,9 @@ class LoginCubit extends Cubit<LoginState> {
     required String password,
   }) async {
     try {
+      if (isClosed) return;
       emit(LoginLoading());
+      if (isClosed) return;
       final result = await _firebaseAuthrepo.signInWithEmailAndPassword(
         email: email,
         password: password,

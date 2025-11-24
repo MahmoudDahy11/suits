@@ -16,11 +16,17 @@ class GoogleCubit extends Cubit<GoogleState> {
   GoogleCubit(this.firebaseAuthrepo) : super(GoogleInitial());
   final FirebaseAuthRepo firebaseAuthrepo;
   Future<void> signInWithGoogle() async {
-    final result = await firebaseAuthrepo.signInWithGoogle();
-
-    result.fold(
-      (failure) => emit(GoogleFailure(errMessage: failure.errMessage)),
-      (_) => emit(GoogleSuccess()),
-    );
+    try {
+      if (isClosed) return;
+      emit(GoogleLoading());
+      if (isClosed) return;
+      final result = await firebaseAuthrepo.signInWithGoogle();
+      result.fold(
+        (failure) => emit(GoogleFailure(errMessage: failure.errMessage)),
+        (user) => emit(GoogleSuccess()),
+      );
+    } catch (e) {
+      emit(GoogleFailure(errMessage: e.toString()));
+    }
   }
 }
