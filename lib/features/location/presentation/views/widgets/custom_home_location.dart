@@ -19,10 +19,7 @@ class CustomHomeLocation extends StatelessWidget {
             ],
           ),
           const SizedBox(height: spacebetweenSections / 2),
-           Text(
-            address,
-            style: AppTextStyles.style15SemiBoldGrey,
-          ),
+          Text(address, style: AppTextStyles.style15SemiBoldGrey),
           const SizedBox(height: spacebetweenSections / 2),
           Divider(thickness: 1.5, color: Colors.grey.shade400),
         ],
