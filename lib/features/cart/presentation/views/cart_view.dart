@@ -17,7 +17,11 @@ class CartView extends StatefulWidget {
   State<CartView> createState() => _CartViewState();
 }
 
-class _CartViewState extends State<CartView> {
+class _CartViewState extends State<CartView>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   @override
   void initState() {
     super.initState();
@@ -31,6 +35,7 @@ class _CartViewState extends State<CartView> {
   static const double _defaultPrice = 30.0;
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final cartCubit = context.read<CartCubit>();
 
     return Scaffold(
@@ -57,7 +62,7 @@ class _CartViewState extends State<CartView> {
               child: CustomButton(
                 text: 'Show Summary',
                 onTap: () {
-                  _openCheckoutSheet(context, state);
+                  _openCheckoutSheet(context);
                 },
               ),
             ),
@@ -73,6 +78,21 @@ class _CartViewState extends State<CartView> {
               const SizedBox(height: spacebetweenSections),
               Expanded(
                 child: BlocBuilder<CartCubit, CartState>(
+                  buildWhen: (previous, current) {
+                    if (previous is! CartLoaded || current is! CartLoaded) {
+                      return true;
+                    }
+                    if (previous.items.length != current.items.length) {
+                      return true;
+                    }
+                    for (int i = 0; i < previous.items.length; i++) {
+                      if (previous.items[i].product.id !=
+                          current.items[i].product.id) {
+                        return true;
+                      }
+                    }
+                    return false;
+                  },
                   builder: (context, state) {
                     if (state is CartLoading) {
                       return const Center(
@@ -139,7 +159,12 @@ class _CartViewState extends State<CartView> {
     );
   }
 
-  void _openCheckoutSheet(BuildContext context, CartLoaded state) {
+  void _openCheckoutSheet(BuildContext context) {
+    final cartCubit = context.read<CartCubit>();
+    final state = cartCubit.state;
+
+    if (state is! CartLoaded) return;
+
     final subTotal = state.items.fold<double>(
       0.0,
       (sum, item) => sum + (_defaultPrice * item.quantity),

@@ -15,6 +15,7 @@ class GetProductCubit extends Cubit<GetProductState> {
   }) async {
     if (isClosed) return;
     emit(GetProductLoading());
+    if (isClosed) return;
 
     final result = await _productRepo.get(
       endPoint: '/search/photos',

@@ -69,6 +69,11 @@ class StripeSevice {
         customerEphemeralKeySecret:
             initPaymentSheetInputModel.ephemeralKeySecret,
         customerId: initPaymentSheetInputModel.customerId,
+        // googlePay: const PaymentSheetGooglePay(
+        //   merchantCountryCode: 'US',
+        //   currencyCode: 'USD',
+        //   testEnv: true,
+        // ),
       ),
     );
   }

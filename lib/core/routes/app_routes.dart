@@ -110,10 +110,8 @@ class AppRoutes {
           final product = state.extra as ProductEntity;
           return MultiBlocProvider(
             providers: [
-              BlocProvider<CartCubit>(create: (_) => getIt<CartCubit>()),
-              BlocProvider<FavoriteCubit>(
-                create: (_) => getIt<FavoriteCubit>(),
-              ),
+              BlocProvider<CartCubit>.value(value: getIt<CartCubit>()),
+              BlocProvider<FavoriteCubit>.value(value: getIt<FavoriteCubit>()),
             ],
             child: ItemDetailsView(product: product),
           );
@@ -130,7 +128,7 @@ class AppRoutes {
           return MultiBlocProvider(
             providers: [
               BlocProvider(create: (context) => getIt<GetProductCubit>()),
-              BlocProvider(create: (context) => getIt<FavoriteCubit>()),
+              BlocProvider.value(value: getIt<FavoriteCubit>()),
             ],
             child: CategoryView(categoryQuery: category),
           );
@@ -144,7 +142,7 @@ class AppRoutes {
           return MultiBlocProvider(
             providers: [
               BlocProvider(create: (context) => getIt<StripePaymentCubit>()),
-              BlocProvider(create: (context) => getIt<CartCubit>()),
+              BlocProvider.value(value: getIt<CartCubit>()),
               BlocProvider(create: (context) => getIt<LocationCubit>()),
             ],
             child: PaymentView(checkoutSummary: checkoutSummary),

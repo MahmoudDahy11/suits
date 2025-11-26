@@ -22,7 +22,8 @@ class HomeView extends StatefulWidget {
   State<HomeView> createState() => _HomeViewState();
 }
 
-class _HomeViewState extends State<HomeView> {
+class _HomeViewState extends State<HomeView>
+    with AutomaticKeepAliveClientMixin {
   void _fetchProductsByCategory(String category) {
     String query;
     String orderBy = 'popular';
@@ -58,12 +59,11 @@ class _HomeViewState extends State<HomeView> {
   }
 
   @override
-  void initState() {
-    super.initState();
-  }
+  bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return BlocBuilder<GetProductCubit, GetProductState>(
       builder: (context, state) {
         List<ProductEntity> products = [];

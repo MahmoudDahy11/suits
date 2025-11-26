@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -75,7 +74,7 @@ class SignoutCard extends StatelessWidget {
                     child: CustomButton(
                       text: 'Yes, Logout',
                       onTap: () {
-                        context.go(loginView);
+                        context.go(root);
                       },
                     ),
                   ),

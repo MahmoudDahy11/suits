@@ -91,8 +91,10 @@ Future<void> getItSetup() async {
   getIt.registerFactory(() => ForgetPasswordCubit(getIt()));
   getIt.registerFactory(() => GoogleCubit(getIt()));
   getIt.registerFactory(() => GetProductCubit(getIt()));
-  getIt.registerFactory(() => CartCubit(repository: getIt<CartRepository>()));
-  getIt.registerFactory(
+  getIt.registerLazySingleton(
+    () => CartCubit(repository: getIt<CartRepository>()),
+  );
+  getIt.registerLazySingleton(
     () => FavoriteCubit(repository: getIt<FavoriteRepository>()),
   );
   getIt.registerFactory(() => StripePaymentCubit(getIt()));

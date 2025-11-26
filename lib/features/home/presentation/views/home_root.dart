@@ -9,6 +9,7 @@ import 'package:suits/features/favorite/presentation/cubits/favorite/favorite_cu
 import 'package:suits/features/favorite/presentation/views/fav_view.dart';
 import 'package:suits/features/home/presentation/cubits/get_product/get_product_cubit.dart';
 import 'package:suits/features/home/presentation/views/home_view.dart';
+import 'package:suits/features/home/presentation/views/widgets/bottom_nav_badges.dart';
 import 'package:suits/features/profile/presentation/views/profile_view.dart';
 
 class HomeRoot extends StatefulWidget {
@@ -20,15 +21,15 @@ class HomeRoot extends StatefulWidget {
 
 class _HomeRootState extends State<HomeRoot> {
   late final PageController controller;
-
   late final List<Widget> screens;
-
   int _selectedIndex = 0;
 
   @override
   void initState() {
     super.initState();
     controller = PageController();
+    getIt<FavoriteCubit>().loadFavorites();
+    getIt<CartCubit>().loadCart();
 
     screens = [
       BlocProvider(
@@ -54,80 +55,25 @@ class _HomeRootState extends State<HomeRoot> {
     if (_selectedIndex == index) return;
 
     setState(() => _selectedIndex = index);
-    controller.animateToPage(
-      index,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-    );
-  }
-
-  Widget _buildIconWithBadge(Widget iconWidget, int count) {
-    const badgePadding = EdgeInsets.all(2);
-    const badgeConstraints = BoxConstraints(minWidth: 16, minHeight: 16);
-    const badgeTextStyle = TextStyle(
-      color: Colors.white,
-      fontSize: 10,
-      fontWeight: FontWeight.bold,
-    );
-
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        iconWidget,
-        if (count > 0)
-          Positioned(
-            right: -6,
-            top: -6,
-            child: Container(
-              padding: badgePadding,
-              decoration: BoxDecoration(
-                color: Colors.red,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.white, width: 1.5),
-              ),
-              constraints: badgeConstraints,
-              child: Text(
-                count.toString(),
-                style: badgeTextStyle,
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ),
-      ],
-    );
+    controller.jumpToPage(index);
   }
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (context) {
-            final cubit = getIt<FavoriteCubit>();
-            cubit.loadFavorites();
-            return cubit;
-          },
-        ),
-        BlocProvider(
-          create: (context) {
-            final cubit = getIt<CartCubit>();
-
-            cubit.loadCart();
-            return cubit;
-          },
-        ),
+        BlocProvider.value(value: getIt<FavoriteCubit>()),
+        BlocProvider.value(value: getIt<CartCubit>()),
       ],
       child: Scaffold(
         backgroundColor: const Color(scafoldColor),
         body: PageView(
           controller: controller,
-
           physics: const NeverScrollableScrollPhysics(),
-          children: screens,
-
           onPageChanged: (index) {
             setState(() => _selectedIndex = index);
           },
+          children: screens,
         ),
         bottomNavigationBar: BottomNavigationBar(
           showSelectedLabels: false,
@@ -139,56 +85,23 @@ class _HomeRootState extends State<HomeRoot> {
           unselectedItemColor: Colors.grey,
           backgroundColor: Colors.white,
           elevation: 10,
-          items: [
-            const BottomNavigationBarItem(
+          items: const [
+            BottomNavigationBarItem(
               icon: Icon(Icons.home_outlined),
               activeIcon: Icon(Icons.home),
               label: 'Home',
             ),
             BottomNavigationBarItem(
-              icon: BlocSelector<CartCubit, CartState, int>(
-                selector: (state) =>
-                    state is CartLoaded ? state.items.length : 0,
-                builder: (context, count) {
-                  return _buildIconWithBadge(
-                    const Icon(Icons.shopping_cart_outlined),
-                    count,
-                  );
-                },
-              ),
-              activeIcon: BlocSelector<CartCubit, CartState, int>(
-                selector: (state) =>
-                    state is CartLoaded ? state.items.length : 0,
-                builder: (context, count) {
-                  return _buildIconWithBadge(
-                    const Icon(Icons.shopping_cart),
-                    count,
-                  );
-                },
-              ),
+              icon: CartBadgeIcon(icon: Icon(Icons.shopping_cart_outlined)),
+              activeIcon: CartBadgeIcon(icon: Icon(Icons.shopping_cart)),
               label: 'Cart',
             ),
             BottomNavigationBarItem(
-              icon: BlocSelector<FavoriteCubit, FavoriteState, int>(
-                selector: (state) =>
-                    state is FavoriteLoaded ? state.items.length : 0,
-                builder: (context, count) {
-                  return _buildIconWithBadge(
-                    const Icon(Icons.favorite_border),
-                    count,
-                  );
-                },
-              ),
-              activeIcon: BlocSelector<FavoriteCubit, FavoriteState, int>(
-                selector: (state) =>
-                    state is FavoriteLoaded ? state.items.length : 0,
-                builder: (context, count) {
-                  return _buildIconWithBadge(const Icon(Icons.favorite), count);
-                },
-              ),
+              icon: FavoriteBadgeIcon(icon: Icon(Icons.favorite_border)),
+              activeIcon: FavoriteBadgeIcon(icon: Icon(Icons.favorite)),
               label: 'Favorite',
             ),
-            const BottomNavigationBarItem(
+            BottomNavigationBarItem(
               icon: Icon(Icons.person_outline),
               activeIcon: Icon(Icons.person),
               label: 'Profile',
