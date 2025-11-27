@@ -437,8 +437,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Your Name**
 
-- GitHub: [@yourusername](https://github.com/yourusername)
-- Email: your.email@example.com
+- GitHub: [@yourusername](https://github.com/MahmoudDahy11)
+- Email: dahym2028@gmail.com
 
 ---
 
@@ -454,7 +454,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-For support, email your.email@example.com or open an issue in the GitHub repository.
+For support, email dahym2028@gmail.com or open an issue in the GitHub repository.
 
 ---
 
@@ -465,3 +465,4 @@ For support, email your.email@example.com or open an issue in the GitHub reposit
 Made with ❤️ using Flutter
 
 </div>
+
