@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:suits/core/constant/app_constant.dart';
 import 'package:suits/core/service/get_it.dart';
+import 'package:suits/features/auth/presentation/cubits/facebook_cubit/facebook_cubit.dart';
 import 'package:suits/features/auth/presentation/cubits/forget_password_cubit/forget_password_cubit.dart';
 import 'package:suits/features/auth/presentation/cubits/google_cubit/google_cubit.dart';
 import 'package:suits/features/auth/presentation/cubits/login_cubit/login_cubit.dart';
@@ -58,6 +59,7 @@ class AppRoutes {
           providers: [
             BlocProvider(create: (context) => getIt<LoginCubit>()),
             BlocProvider(create: (context) => getIt<GoogleCubit>()),
+            BlocProvider(create: (context) => getIt<FacebookCubit>()),
           ],
           child: const LoginView(),
         ),

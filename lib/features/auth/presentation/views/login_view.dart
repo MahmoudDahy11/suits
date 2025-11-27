@@ -12,6 +12,7 @@ import 'package:suits/core/widgets/custom_button.dart';
 import 'package:suits/core/widgets/custom_text_field.dart';
 import 'package:suits/features/auth/presentation/cubits/google_cubit/google_cubit.dart';
 import 'package:suits/features/auth/presentation/cubits/login_cubit/login_cubit.dart';
+import '../cubits/facebook_cubit/facebook_cubit.dart';
 import 'widgets/card_view.dart';
 import 'widgets/custom_divider.dart';
 import 'widgets/custom_list_tile.dart';
@@ -198,7 +199,12 @@ class _LoginViewState extends State<LoginView> {
                             icon: Assets.applet,
                           ),
                           const SizedBox(height: spacebetweenSections),
-                          const CustomListTile(
+                          CustomListTile(
+                            onTap: () {
+                              BlocProvider.of<FacebookCubit>(
+                                context,
+                              ).signInWithFacebook();
+                            },
                             title: 'Sign in with facebook',
                             icon: Assets.facebookt,
                           ),
@@ -242,5 +248,4 @@ class _LoginViewState extends State<LoginView> {
       },
     );
   }
-
 }

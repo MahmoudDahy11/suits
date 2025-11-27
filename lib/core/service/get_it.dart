@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
 import 'package:suits/core/api/api_service.dart';
+import 'package:suits/features/auth/presentation/cubits/facebook_cubit/facebook_cubit.dart';
 import 'package:suits/features/auth/presentation/cubits/google_cubit/google_cubit.dart';
 import 'package:suits/features/cart/data/repo/cart_repo_impl.dart';
 import 'package:suits/features/cart/domain/repo/cart_repo.dart';
@@ -99,4 +100,5 @@ Future<void> getItSetup() async {
   );
   getIt.registerFactory(() => StripePaymentCubit(getIt()));
   getIt.registerFactory(() => LocationCubit(getIt()));
+  getIt.registerFactory(() => FacebookCubit(getIt()));
 }
