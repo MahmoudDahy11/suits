@@ -35,6 +35,11 @@ import '../../features/cart/data/services/cart_firestore_service.dart';
 import '../../features/location/data/service/location_firestore_service.dart';
 import '../../features/payment/domain/repo/stripe_repo.dart';
 import '../../features/payment/presentation/cubits/stripe_payment/stripe_payment_cubit.dart';
+import 'package:suits/core/service/notification_service.dart';
+import 'package:suits/features/orders/data/repo/order_repo_impl.dart';
+import 'package:suits/features/orders/data/services/order_service.dart';
+import 'package:suits/features/orders/domain/repo/order_repo.dart';
+import 'package:suits/features/orders/presentation/cubits/order_cubit.dart';
 
 /*
  * this file is responsible for setting up the GetIt service locator
@@ -60,6 +65,10 @@ Future<void> getItSetup() async {
   getIt.registerLazySingleton<LocationFirestoreService>(
     () => LocationFirestoreService(firestore: FirebaseFirestore.instance),
   );
+  getIt.registerLazySingleton<NotificationService>(() => NotificationService());
+  getIt.registerLazySingleton<OrderService>(
+    () => OrderService(firestore: FirebaseFirestore.instance),
+  );
   // repo
   getIt.registerLazySingleton<FirebaseAuthRepo>(
     () => FirebaseAuthRepoImplement(getIt<FirebaseService>()),
@@ -84,6 +93,9 @@ Future<void> getItSetup() async {
       locationFirestoreService: getIt<LocationFirestoreService>(),
     ),
   );
+  getIt.registerLazySingleton<OrderRepo>(
+    () => OrderRepoImpl(service: getIt<OrderService>()),
+  );
   // Cubits
   getIt.registerFactory(() => SignupCubit(getIt()));
   getIt.registerFactory(() => LoginCubit(getIt()));
@@ -101,4 +113,5 @@ Future<void> getItSetup() async {
   getIt.registerFactory(() => StripePaymentCubit(getIt()));
   getIt.registerFactory(() => LocationCubit(getIt()));
   getIt.registerFactory(() => FacebookCubit(getIt()));
+  getIt.registerFactory(() => OrderCubit(getIt<OrderRepo>()));
 }

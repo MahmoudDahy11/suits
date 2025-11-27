@@ -4,6 +4,7 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:suits/core/routes/app_routes.dart';
 import 'package:suits/core/secret/secret.dart';
 import 'package:suits/core/service/get_it.dart';
+import 'package:suits/core/service/notification_service.dart';
 import 'package:suits/features/auth/data/service/local_storage.dart';
 import 'package:suits/firebase_options.dart';
 
@@ -13,6 +14,7 @@ Future<void> main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await LocalStorageService.init();
   await getItSetup();
+  await getIt<NotificationService>().init();
 
   runApp(const Suits());
 }
@@ -28,7 +30,6 @@ class Suits extends StatelessWidget {
     );
   }
 }
-
 
 //iphone8009688@gmail.com
 //123456789

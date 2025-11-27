@@ -38,3 +38,4 @@ const String paymentView = "/paymentView";
 const String thanksView = "/thanksView";
 const String addLocationView = "/addLocationView";
 const String locationDetailsView = "/locationDetailsView";
+const String purchasedProductsView = "/purchasedProductsView";

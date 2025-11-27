@@ -32,9 +32,14 @@ import '../../features/cart/presentation/cubits/cart/cart_cubit.dart';
 import '../../features/favorite/presentation/cubits/favorite/favorite_cubit.dart';
 import '../../features/location/presentation/views/location_details_view.dart';
 import '../../features/payment/presentation/views/payment_view.dart';
+import 'package:suits/features/orders/presentation/cubits/order_cubit.dart';
+import 'package:suits/features/orders/presentation/views/purchased_products_view.dart';
 
 class AppRoutes {
+  static final GlobalKey<NavigatorState> navigatorKey =
+      GlobalKey<NavigatorState>();
   static final GoRouter router = GoRouter(
+    navigatorKey: navigatorKey,
     initialLocation: splash,
     routes: [
       GoRoute(
@@ -146,6 +151,7 @@ class AppRoutes {
               BlocProvider(create: (context) => getIt<StripePaymentCubit>()),
               BlocProvider.value(value: getIt<CartCubit>()),
               BlocProvider(create: (context) => getIt<LocationCubit>()),
+              BlocProvider(create: (context) => getIt<OrderCubit>()),
             ],
             child: PaymentView(checkoutSummary: checkoutSummary),
           );
@@ -175,6 +181,14 @@ class AppRoutes {
         builder: (context, state) => BlocProvider(
           create: (context) => getIt<LocationCubit>(),
           child: const LocationDetailsView(),
+        ),
+      ),
+      GoRoute(
+        path: purchasedProductsView,
+        name: 'purchasedProductsView',
+        builder: (context, state) => BlocProvider(
+          create: (context) => getIt<OrderCubit>(),
+          child: const PurchasedProductsView(),
         ),
       ),
     ],
