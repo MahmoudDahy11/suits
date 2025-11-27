@@ -37,4 +37,5 @@ abstract class FirebaseAuthRepo {
   });
 
   Future<Either<CustomFailure, Unit>> signInWithGoogle();
+  Future<Either<CustomFailure, UserEntity>> signinWithFacebook();
 }

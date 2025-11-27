@@ -13,7 +13,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 class FirebaseAuthRepoImplement extends FirebaseAuthRepo {
   final FirebaseService _firebaseService;
   FirebaseAuthRepoImplement(this._firebaseService);
-  
+
   FirebaseFirestore get _firestore => _firebaseService.firestore;
   User? get _currentUser => FirebaseAuth.instance.currentUser;
   final _otpService = OtpService();
@@ -158,4 +158,24 @@ class FirebaseAuthRepoImplement extends FirebaseAuthRepo {
     }
   }
 
+  @override
+  Future<Either<CustomFailure, UserEntity>> signinWithFacebook() async {
+    try {
+      final userCredential = await _firebaseService.signInWithFacebook();
+
+      if (userCredential.user == null) {
+        return left(
+          CustomFailure(errMessage: "No user returned from Facebook login."),
+        );
+      }
+
+      final UserModel userModel = UserModel.fromFirebase(userCredential.user!);
+
+      return right(userModel.toEntity());
+    } on CustomException catch (e) {
+      return left(CustomFailure(errMessage: e.errMessage));
+    } catch (e) {
+      return left(CustomFailure(errMessage: e.toString()));
+    }
+  }
 }
