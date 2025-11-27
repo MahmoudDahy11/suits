@@ -52,7 +52,9 @@ class _CategoryViewState extends State<CategoryView> {
                 children: [
                   CustomAppBar(
                     title: widget.categoryQuery.toUpperCase(),
-                    onTap: context.pop,
+                    onTap: () {
+                      context.pop();
+                    },
                   ),
                   const SizedBox(height: spacebetweenSections / 2),
                   if (state is GetProductFailure)

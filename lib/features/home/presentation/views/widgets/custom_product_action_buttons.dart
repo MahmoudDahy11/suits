@@ -42,7 +42,7 @@ class _ProductActionButtonsState extends State<ProductActionButtons> {
               child: IconButton(
                 onPressed: () {
                   check.value = !check.value;
-                  context.go(homeRoot);
+                  context.pop();
                 },
                 icon: ValueListenableBuilder<bool>(
                   valueListenable: check,

@@ -14,6 +14,10 @@ import 'package:suits/core/widgets/custom_text_field.dart';
 import 'package:suits/features/cart/presentation/cubits/cart/cart_cubit.dart';
 import 'package:suits/features/location/presentation/cubits/location/location_cubit.dart';
 import 'package:suits/features/payment/presentation/cubits/stripe_payment/stripe_payment_cubit.dart';
+import 'package:suits/features/orders/presentation/cubits/order_cubit.dart';
+import 'package:suits/features/orders/domain/entity/order_entity.dart';
+import 'package:suits/core/service/notification_service.dart';
+import 'package:suits/core/service/get_it.dart';
 
 import '../../data/models/payment_intent_input_model.dart';
 import '../../data/models/paypal_model/amount_details_model.dart';
@@ -66,17 +70,44 @@ class _PaymentViewState extends State<PaymentView> {
     }
   }
 
-  void _navigateAfterPayment(BuildContext context) {
+  void _navigateAfterPayment(BuildContext context) async {
     final locationState = context.read<LocationCubit>().state;
+
+    final cartState = context.read<CartCubit>().state;
+    if (cartState is CartLoaded && cartState.items.isNotEmpty) {
+      final item = cartState.items.first;
+
+      await getIt<NotificationService>().showPaymentSuccessNotification(
+        productName: item.product.slug,
+        productId: item.product.id,
+      );
+
+      if (!context.mounted) return;
+
+      for (var cartItem in cartState.items) {
+        final order = OrderEntity(
+          id:
+              DateTime.now().millisecondsSinceEpoch.toString() +
+              cartItem.product.id,
+          productId: cartItem.product.id,
+          productName: cartItem.product.slug,
+          imageUrl: cartItem.product.urls.small,
+          date: DateTime.now(),
+        );
+        context.read<OrderCubit>().addOrder(order);
+      }
+    }
+
+    if (!context.mounted) return;
 
     context.read<CartCubit>().clearCart();
     showSnakBar(context, "Payment Successful");
 
     if (locationState is LocationSuccess &&
         locationState.locations.isNotEmpty) {
-      context.go(locationDetailsView); // لو عنده location يروح للـ Details
+      context.go(locationDetailsView);
     } else {
-      context.go(addLocationView); // لو مفيش يروح يضيف Location
+      context.go(addLocationView);
     }
   }
 

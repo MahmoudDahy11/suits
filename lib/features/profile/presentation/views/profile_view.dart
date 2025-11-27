@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:suits/core/constant/app_constant.dart';
 import 'package:suits/features/auth/presentation/cubits/signout_cubit/signout_cubit.dart';
@@ -112,7 +113,10 @@ class _ProfileViewState extends State<ProfileView> {
                               icon: Icons.person,
                             ),
                             const SizedBox(height: spacebetweenSections),
-                            const CustomListTileProfile(
+                            CustomListTileProfile(
+                              onTap: () {
+                                context.go(purchasedProductsView);
+                              },
                               title: 'My Order',
                               icon: Icons.menu,
                             ),
