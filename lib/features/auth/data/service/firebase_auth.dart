@@ -2,8 +2,10 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:suits/core/error/custom_excption.dart';
+import 'package:suits/features/auth/data/service/local_storage.dart';
 
 /*
  * FirebaseService class
@@ -105,6 +107,42 @@ class FirebaseService {
         throw CustomException(errMessage: 'User not authenticated');
       }
       await user.updatePassword(newPassword);
+    } catch (e) {
+      throw CustomException(errMessage: e.toString());
+    }
+  }
+
+  Future<UserCredential> signInWithFacebook() async {
+    try {
+      final LoginResult result = await FacebookAuth.instance.login();
+      log("Facebook login status: ${result.status}");
+      log("Facebook login message: ${result.message}");
+      if (result.status == LoginStatus.success) {
+        final AccessToken accessToken = result.accessToken!;
+
+        final OAuthCredential credential = FacebookAuthProvider.credential(
+          accessToken.tokenString,
+        );
+
+        final UserCredential userCredential = await FirebaseAuth.instance
+            .signInWithCredential(credential);
+
+        final user = userCredential.user!;
+        await LocalStorageService.saveUserData(
+          uid: user.uid,
+          email: user.email!,
+          name: user.displayName,
+          photoUrl: user.photoURL,
+        );
+
+        return userCredential;
+      } else if (result.status == LoginStatus.cancelled) {
+        throw CustomException(errMessage: 'Facebook sign-in was cancelled.');
+      } else {
+        throw CustomException(
+          errMessage: result.message ?? 'Unknown Facebook login error.',
+        );
+      }
     } catch (e) {
       throw CustomException(errMessage: e.toString());
     }
