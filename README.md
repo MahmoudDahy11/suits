@@ -51,8 +51,6 @@ A modern, feature-rich e-commerce mobile application built with Flutter, featuri
 ### 💳 Payment Integration
 - **Stripe Payment Gateway**
 - **PayPal Payment Integration**
-- **Moyasar Payment Support**
-- **Mada Payments**
 - Saved Cards Management
 - Cash on Delivery (COD)
 - Secure Payment Processing
